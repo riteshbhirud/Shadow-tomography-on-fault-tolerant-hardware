@@ -38,8 +38,12 @@ results/
 scratch/
 
 # Notes, decision logs and the handover package for collaborators: kept locally, not published
-docs/
+notes/
 handover/
+
+# Documentation build output
+docs/build/
+docs/Manifest.toml
 
 # Local copy of the original Python code, used by the :pyref tests only
 reference/

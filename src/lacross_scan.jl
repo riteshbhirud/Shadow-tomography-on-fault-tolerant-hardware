@@ -296,7 +296,7 @@ end
 """
     min_weight_codeword(G_logical, G_trivial; iters=2000, seed=0) -> (weight, vector)
 
-The information-set search of `Circuits.min_weight_codeword` (gf2.min_weight_codeword) on a Bool copy of
+The information-set search of `Circuits.min_weight_codeword` on a Bool copy of
 `G_logical`: an upper bound on the weight of the lightest vector in its span outside span(G_trivial).
 """
 min_weight_codeword(Glog::AbstractMatrix, Gtriv::AbstractMatrix; iters::Integer=2000, seed::Integer=0) =

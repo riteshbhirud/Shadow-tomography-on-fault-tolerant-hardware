@@ -1,0 +1,11 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterCitations = "daee34ce-89f3-4625-b898-19384cb65244"
+FTShadows = "33157279-2a9e-484c-b743-0b99b9463ff9"
+
+[sources]
+FTShadows = {path = ".."}
+
+[compat]
+Documenter = "1"
+DocumenterCitations = "1"

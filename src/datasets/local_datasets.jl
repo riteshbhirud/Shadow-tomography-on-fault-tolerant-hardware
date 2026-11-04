@@ -177,8 +177,8 @@ end
 """
     nov20_expectations(ds, sids, calibration) -> (rows, known)
 
-Ideal, after-logical-channel and noise-expected ⟨P⟩ for every Pauli on the m qubits, and the fidelities
-(make_local_datasets.expectations). Each calibrated q is shifted by its sigma in turn for the uncertainty.
+Ideal, after-logical-channel and noise-expected ⟨P⟩ for every Pauli on the m qubits, and the fidelities.
+Each calibrated q is shifted by its sigma in turn for the uncertainty.
 """
 function nov20_expectations(ds, sids, calibration)
     m, state = ds["m"], NOV20_STATES[ds["state"]]
@@ -235,7 +235,7 @@ _od(ps...) = OrderedDict{String,Any}(ps...)
 """
     nov20_meta(ds, sids, records, costs, labels_of, flags, known, runtime; code_version, generator)
 
-The dataset's meta.json content (INTERFACE v1.1 with the Nov-20 keys).
+The dataset's meta.json content (format v1.1 with the Nov-20 keys).
 """
 function nov20_meta(ds, sids, records, costs, labels_of, flags, known, runtime; code_version = "unknown",
                     generator = "scripts/make_local_datasets.jl", created = Libc.strftime("%Y-%m-%d", time()))

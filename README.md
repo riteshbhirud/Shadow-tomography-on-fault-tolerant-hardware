@@ -1,5 +1,7 @@
 # Shadow tomography on fault-tolerant hardware
 
+[![docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://riteshbhirud.github.io/Shadow-tomography-on-fault-tolerant-hardware/)
+
 `FTShadows.jl` simulates fault-tolerant logical measurements for logical shadow tomography. You give it a logical stabilizer state and a measurement setting on the surface code or the [[72,12,6]] bivariate bicycle code (BB72). It builds that code's fault-tolerant measurement circuit, runs it with circuit-level noise, and decodes every shot. For each shot it returns:
 
 - the decoded logical outcomes,

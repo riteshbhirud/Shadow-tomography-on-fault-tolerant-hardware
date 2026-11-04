@@ -1,5 +1,4 @@
-# Shot-record files (INTERFACE v1.1): reading, the loader API from handover/julia/load_records.jl,
-# and writers that reproduce the stored files' bytes exactly.
+# Shot-record files (format v1.1): reading, the loader API, and writers that reproduce the stored files' bytes exactly.
 
 using JSON
 

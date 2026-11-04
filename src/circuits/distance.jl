@@ -60,7 +60,7 @@ end
 """
     min_weight_codeword(G, Gtriv; iters=2000, seed=0, weight=count)
 
-Randomized information-set search (gf2.min_weight_codeword) for a low-weight vector in the row span
+Randomized information-set search for a low-weight vector in the row span
 of `G` that is not in the row span of `Gtriv`: per iteration, row-reduce `G` with its columns in the
 order `default_rng(seed).permutation(n)` and try every row and the sums of rows less than 6 apart.
 Returns `(weight, vector)`, an upper bound on the minimum, or `(10^9, nothing)`.
