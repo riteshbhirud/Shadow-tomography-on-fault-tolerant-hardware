@@ -1,0 +1,86 @@
+{
+ "bb72_gauge_X_r1": {
+  "detectors": 116,
+  "flips": 2,
+  "raw_ones": 3,
+  "sha256": "8a370a25f9b4b761f9be"
+ },
+ "bb72_gauge_Y_r1": {
+  "detectors": 128,
+  "flips": 25,
+  "raw_ones": 25,
+  "sha256": "ed206ec247ffb6eec7d4"
+ },
+ "bb72_gauge_Z_r1": {
+  "detectors": 116,
+  "flips": 57,
+  "raw_ones": 56,
+  "sha256": "753629215358c4d5c40f"
+ },
+ "bb72_readout_X": {
+  "detectors": 36,
+  "flips": 380,
+  "raw_ones": 381,
+  "sha256": "b7a6d7d732d4eab5a5ce"
+ },
+ "bb72_readout_Z": {
+  "detectors": 36,
+  "flips": 385,
+  "raw_ones": 384,
+  "sha256": "ca5bc41a0c465422511e"
+ },
+ "surface_XX_2p_d3_r1_conj_nan_gap": {
+  "detectors": 24,
+  "flips": 18,
+  "raw_ones": 26,
+  "sha256": "48cc3cedc4d06b5a65a9"
+ },
+ "surface_XX_2p_d3_r3_conj": {
+  "detectors": 64,
+  "flips": 5,
+  "raw_ones": 26,
+  "sha256": "6e6c0a04efb4d5edfbd0"
+ },
+ "surface_ZZ_2p_d3_r2_conj": {
+  "detectors": 44,
+  "flips": 11,
+  "raw_ones": 31,
+  "sha256": "36cf6ed7846407d99dc3"
+ },
+ "surface_ZZ_2p_d3_r2_same": {
+  "detectors": 48,
+  "flips": 3,
+  "raw_ones": 31,
+  "sha256": "b86e52f6baead2e7c9c9"
+ },
+ "surface_ZZ_2p_d3_r3_conj": {
+  "detectors": 64,
+  "flips": 6,
+  "raw_ones": 31,
+  "sha256": "753f6e34fe5e46700e13"
+ },
+ "surface_ZZ_3p_d3_r2_conj": {
+  "detectors": 68,
+  "flips": 27,
+  "raw_ones": 82,
+  "sha256": "1f483a8c8c1f21af23ad"
+ },
+ "surface_local_XZ": {
+  "detectors": 8,
+  "flips": 302,
+  "raw_ones": 301,
+  "sha256": "9e6ff52acb597f86d806"
+ },
+ "surface_single_X_d3_r2": {
+  "detectors": 20,
+  "flips": 5,
+  "raw_ones": 22,
+  "sha256": "33b5dd171e370785a56d"
+ },
+ "surface_single_Z_d3_r2": {
+  "detectors": 20,
+  "flips": 295,
+  "raw_ones": 273,
+  "sha256": "b3a720cd9361e4efa3a3"
+ }
+}

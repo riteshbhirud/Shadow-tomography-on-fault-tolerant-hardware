@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "FTShadows.jl: fault-tolerant measurement simulator for logical shadow tomography"
+version: 0.1.0
+date-released: 2026-11-03
+license: MIT
+repository-code: "https://github.com/riteshbhirud/Shadow-tomography-on-fault-tolerant-hardware"
+authors:
+  - family-names: "TODO"
+    given-names: "TODO"
+# TODO: authors, affiliations and ORCIDs are to be filled in.

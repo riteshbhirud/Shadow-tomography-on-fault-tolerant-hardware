@@ -1,0 +1,10 @@
+[deps]
+Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
+FTShadows = "33157279-2a9e-484c-b743-0b99b9463ff9"
+Oscar = "f1435218-dba5-11e9-1e4d-f1a5fab5fc13"
+
+[sources]
+FTShadows = {path = "../.."}
+
+[compat]
+Oscar = "1.8.2"

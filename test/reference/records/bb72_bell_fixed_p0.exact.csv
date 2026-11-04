@@ -1,0 +1,16 @@
+pauli,exact,lambda_P,settings
+IX,0,0.333333333333,local:XX;local:YX;local:ZX
+IY,0,0.333333333333,local:XY;local:YY;local:ZY
+IZ,0,0.333333333333,local:XZ;local:YZ;local:ZZ
+XI,0,0.333333333333,local:XX;local:XY;local:XZ
+XX,1,0.111111111111,local:XX
+XY,0,0.111111111111,local:XY
+XZ,0,0.111111111111,local:XZ
+YI,0,0.333333333333,local:YX;local:YY;local:YZ
+YX,0,0.111111111111,local:YX
+YY,-1,0.111111111111,local:YY
+YZ,0,0.111111111111,local:YZ
+ZI,0,0.333333333333,local:ZX;local:ZY;local:ZZ
+ZX,0,0.111111111111,local:ZX
+ZY,0,0.111111111111,local:ZY
+ZZ,1,0.111111111111,local:ZZ

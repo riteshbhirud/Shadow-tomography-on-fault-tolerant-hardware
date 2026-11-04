@@ -1,0 +1,40 @@
+name = "FTShadows"
+uuid = "33157279-2a9e-484c-b743-0b99b9463ff9"
+version = "0.1.0"
+authors = ["The FTShadows authors"]
+
+[deps]
+Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+PythonCall = "6099a3de-0909-46bc-b1f4-468b9a2dfc0d"
+QuantumClifford = "0525e862-1e90-11e9-3e4d-1b39d7109de1"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
+
+[weakdeps]
+Oscar = "f1435218-dba5-11e9-1e4d-f1a5fab5fc13"
+
+[extensions]
+FTShadowsOscarExt = "Oscar"
+
+[compat]
+Base64 = "1.11.0"
+Graphs = "1.15.0"
+JSON = "1.13.4"
+LinearAlgebra = "1.12.0"
+OrderedCollections = "2.0.3"
+Oscar = "1.8.2"
+Printf = "1.11.0"
+PythonCall = "0.9.37"
+QuantumClifford = "0.11.8"
+Random = "1.11.0"
+SHA = "0.7.0"
+SparseArrays = "1.12.0"
+SpecialFunctions = "2.9.1"
+julia = "1.12"

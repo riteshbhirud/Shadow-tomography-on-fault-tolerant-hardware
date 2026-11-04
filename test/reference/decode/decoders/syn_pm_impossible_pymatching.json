@@ -1,0 +1,73 @@
+{
+ "case": "syn_pm_impossible_pymatching",
+ "dem": "syn_pm_impossible",
+ "decoder": "pymatching",
+ "repeat": 3,
+ "dem_text": "error(0.1) D0 D1 L0\nerror(0.1) D0",
+ "pred": [
+  "0",
+  "1",
+  "0",
+  "1",
+  "0",
+  "1",
+  "0",
+  "1",
+  "0",
+  "1",
+  "0",
+  "1"
+ ],
+ "gap": [
+  "inf",
+  "inf",
+  "inf",
+  "inf",
+  "inf",
+  "inf",
+  "inf",
+  "inf",
+  "inf",
+  "inf",
+  "inf",
+  "inf"
+ ],
+ "kind": [
+  "exact",
+  "exact",
+  "exact",
+  "exact",
+  "exact",
+  "exact",
+  "exact",
+  "exact",
+  "exact",
+  "exact",
+  "exact",
+  "exact"
+ ],
+ "obs": [
+  "0",
+  "0",
+  "0",
+  "0",
+  "0",
+  "0",
+  "0",
+  "0",
+  "0",
+  "0",
+  "0",
+  "0"
+ ],
+ "counters": {
+  "pred_mismatches": 0,
+  "max_weight_mismatch": "0.0"
+ },
+ "gap_exact": [
+  true
+ ],
+ "undetectable_w": [
+  "inf"
+ ]
+}

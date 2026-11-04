@@ -1,0 +1,9 @@
+pauli,exact,lambda_P,settings
+IX,0,0.25,local:XX;local:ZX
+IZ,0,0.25,local:XZ;local:ZZ
+XI,0,0.25,local:XX;local:XZ
+XX,1,0.375,local:XX;surgery:XX
+XZ,0,0.125,local:XZ
+ZI,0,0.25,local:ZX;local:ZZ
+ZX,0,0.125,local:ZX
+ZZ,1,0.375,local:ZZ;surgery:ZZ

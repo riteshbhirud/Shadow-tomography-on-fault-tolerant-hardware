@@ -1,0 +1,92 @@
+{
+ "case": "bb72_local_XY_bell",
+ "code": "bb72",
+ "setting": "local:XY",
+ "state": [
+  [
+   "XX",
+   0
+  ],
+  [
+   "ZZ",
+   0
+  ]
+ ],
+ "p": 0.001,
+ "shots": 10,
+ "seed": 8,
+ "params": {
+  "rounds": 1
+ },
+ "outcomes": [
+  "10",
+  "11",
+  "11",
+  "01",
+  "01",
+  "11",
+  "01",
+  "01",
+  "11",
+  "11"
+ ],
+ "raw": [
+  "00",
+  "11",
+  "11",
+  "01",
+  "01",
+  "11",
+  "01",
+  "01",
+  "11",
+  "11"
+ ],
+ "confidence": [
+  "3.124670219509614",
+  "3.252449335364979",
+  "3.2524493353649815",
+  "3.2524493353649824",
+  "0.20218092415651867",
+  "3.2524493353649824",
+  "1.1749697164877695",
+  "3.2524493353649824",
+  "3.2524493353649806",
+  "3.252449335364979"
+ ],
+ "kind": [
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx"
+ ],
+ "cost": {
+  "merged_rounds": 1,
+  "data_qubits": 92,
+  "initial_data_qubits": 72,
+  "ancilla_qubits": 93,
+  "initial_ancilla_qubits": 72,
+  "extra_qubits": 41,
+  "circuit_layers": 30
+ },
+ "meta": {
+  "p": 0.001,
+  "noise": "bravyi_cal",
+  "shots": 10,
+  "decoder": "relay",
+  "seed": 8,
+  "detectors": 128,
+  "name": "bb72_local_XY_r1"
+ },
+ "setting_labels": [
+  "XI",
+  "IY"
+ ],
+ "records_sha256": "ce69cc7473899591b772e693e65283eb22ffd3eccaa384025554d29fc7876376"
+}

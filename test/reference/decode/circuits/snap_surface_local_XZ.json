@@ -1,0 +1,58 @@
+{
+ "name": "snap_surface_local_XZ",
+ "experiment_name": "readout_XZ_d3_r0",
+ "p": 0.002,
+ "noise": "bravyi_cal",
+ "sample": {
+  "circuit": "QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(1, 0) 1\nQUBIT_COORDS(2, 0) 2\nQUBIT_COORDS(0, 1) 3\nQUBIT_COORDS(1, 1) 4\nQUBIT_COORDS(2, 1) 5\nQUBIT_COORDS(0, 2) 6\nQUBIT_COORDS(1, 2) 7\nQUBIT_COORDS(2, 2) 8\nQUBIT_COORDS(4, 0) 9\nQUBIT_COORDS(5, 0) 10\nQUBIT_COORDS(6, 0) 11\nQUBIT_COORDS(4, 1) 12\nQUBIT_COORDS(5, 1) 13\nQUBIT_COORDS(6, 1) 14\nQUBIT_COORDS(4, 2) 15\nQUBIT_COORDS(5, 2) 16\nQUBIT_COORDS(6, 2) 17\nR 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17\nMPP Z0*Z1 X0*X1*X3*X4 Z1*Z2*Z4*Z5 X2*X5 X3*X6 Z3*Z4*Z6*Z7 X4*X5*X7*X8 Z7*Z8 Z9*Z10 X9*X10*X12*X13 Z10*Z11*Z13*Z14 X11*X14 X12*X15 Z12*Z13*Z15*Z16 X13*X14*X16*X17 Z16*Z17 Z0*Z3*Z6*Z9*Z12*Z15 X0*X1*X2*X9*X10*X11\nCX rec[-2] 0 rec[-2] 1 rec[-2] 2\nCZ rec[-1] 0 rec[-1] 3 rec[-1] 6\nTICK\nZ_ERROR(0.002) 0 1 2 3 4 5 6 7 8\nX_ERROR(0.002) 9 10 11 12 13 14 15 16 17\nMX 0 1 2 3 4 5 6 7 8\nM 9 10 11 12 13 14 15 16 17\nDETECTOR(0, 0, 0) rec[-35] rec[-18] rec[-17] rec[-15] rec[-14]\nDETECTOR(0, 0, 1) rec[-33] rec[-16] rec[-13]\nDETECTOR(0, 0, 2) rec[-32] rec[-15] rec[-12]\nDETECTOR(0, 0, 3) rec[-30] rec[-14] rec[-13] rec[-11] rec[-10]\nDETECTOR(0, 0, 4) rec[-28] rec[-9] rec[-8]\nDETECTOR(0, 0, 5) rec[-26] rec[-8] rec[-7] rec[-5] rec[-4]\nDETECTOR(0, 0, 6) rec[-23] rec[-6] rec[-5] rec[-3] rec[-2]\nDETECTOR(0, 0, 7) rec[-21] rec[-2] rec[-1]\nOBSERVABLE_INCLUDE(0) rec[-18] rec[-17] rec[-16]\nOBSERVABLE_INCLUDE(1) rec[-9] rec[-6] rec[-3]",
+  "n_prep": 18,
+  "target_records": [
+   [
+    18,
+    19,
+    20
+   ],
+   [
+    27,
+    30,
+    33
+   ]
+  ],
+  "detector_count": 8,
+  "cost": {
+   "merged_rounds": 0,
+   "data_qubits": 18,
+   "initial_data_qubits": 18,
+   "ancilla_qubits": 0,
+   "initial_ancilla_qubits": 16,
+   "extra_qubits": 0,
+   "circuit_layers": 0
+  }
+ },
+ "eigen": {
+  "circuit": "QUBIT_COORDS(0, 0) 0\nQUBIT_COORDS(1, 0) 1\nQUBIT_COORDS(2, 0) 2\nQUBIT_COORDS(0, 1) 3\nQUBIT_COORDS(1, 1) 4\nQUBIT_COORDS(2, 1) 5\nQUBIT_COORDS(0, 2) 6\nQUBIT_COORDS(1, 2) 7\nQUBIT_COORDS(2, 2) 8\nQUBIT_COORDS(4, 0) 9\nQUBIT_COORDS(5, 0) 10\nQUBIT_COORDS(6, 0) 11\nQUBIT_COORDS(4, 1) 12\nQUBIT_COORDS(5, 1) 13\nQUBIT_COORDS(6, 1) 14\nQUBIT_COORDS(4, 2) 15\nQUBIT_COORDS(5, 2) 16\nQUBIT_COORDS(6, 2) 17\nR 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17\nMPP Z0*Z1 X0*X1*X3*X4 Z1*Z2*Z4*Z5 X2*X5 X3*X6 Z3*Z4*Z6*Z7 X4*X5*X7*X8 Z7*Z8 Z9*Z10 X9*X10*X12*X13 Z10*Z11*Z13*Z14 X11*X14 X12*X15 Z12*Z13*Z15*Z16 X13*X14*X16*X17 Z16*Z17 X0*X1*X2 Z9*Z12*Z15\nCZ rec[-2] 0 rec[-2] 3 rec[-2] 6\nCX rec[-1] 9 rec[-1] 10 rec[-1] 11\nTICK\nZ_ERROR(0.002) 0 1 2 3 4 5 6 7 8\nX_ERROR(0.002) 9 10 11 12 13 14 15 16 17\nMX 0 1 2 3 4 5 6 7 8\nM 9 10 11 12 13 14 15 16 17\nDETECTOR(0, 0, 0) rec[-35] rec[-18] rec[-17] rec[-15] rec[-14]\nDETECTOR(0, 0, 1) rec[-33] rec[-16] rec[-13]\nDETECTOR(0, 0, 2) rec[-32] rec[-15] rec[-12]\nDETECTOR(0, 0, 3) rec[-30] rec[-14] rec[-13] rec[-11] rec[-10]\nDETECTOR(0, 0, 4) rec[-28] rec[-9] rec[-8]\nDETECTOR(0, 0, 5) rec[-26] rec[-8] rec[-7] rec[-5] rec[-4]\nDETECTOR(0, 0, 6) rec[-23] rec[-6] rec[-5] rec[-3] rec[-2]\nDETECTOR(0, 0, 7) rec[-21] rec[-2] rec[-1]\nOBSERVABLE_INCLUDE(0) rec[-18] rec[-17] rec[-16]\nOBSERVABLE_INCLUDE(1) rec[-9] rec[-6] rec[-3]",
+  "n_prep": 18,
+  "target_records": [
+   [
+    18,
+    19,
+    20
+   ],
+   [
+    27,
+    30,
+    33
+   ]
+  ],
+  "detector_count": 8,
+  "cost": {
+   "merged_rounds": 0,
+   "data_qubits": 18,
+   "initial_data_qubits": 18,
+   "ancilla_qubits": 0,
+   "initial_ancilla_qubits": 16,
+   "extra_qubits": 0,
+   "circuit_layers": 0
+  }
+ }
+}

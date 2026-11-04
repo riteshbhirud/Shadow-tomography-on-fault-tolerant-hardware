@@ -1,0 +1,240 @@
+{
+ "format_version": "1.1",
+ "dataset": "bb72_bell_fixed_p0",
+ "created": "2026-11-01",
+ "code": {
+  "name": "BB72 [[72,12,6]] bivariate bicycle code",
+  "distance": 6,
+  "logical_basis": "LOCAL basis, handover/bases/bb72_local_basis.json (D-37); dataset qubit i = code logical qubit i"
+ },
+ "n_logical": 2,
+ "logical_qubit_order": "character i of every Pauli string = logical qubit i (0-based)",
+ "conventions": {
+  "outcome_bit": "0 -> eigenvalue +1, 1 -> eigenvalue -1 of the listed Hermitian string",
+  "Y": "Y_i = i X_i Z_i (the Hermitian logical Y of qubit i)",
+  "setting": "local:B0B1.. measures B_i on qubit i; all strings measured jointly on one shot",
+  "confidence": "complementary gap, minimum over the setting's strings (INTERFACE.md section 2)",
+  "state_for_testing": "'sign' is +1 or -1 (not a sign bit)"
+ },
+ "noise": {
+  "model": "none",
+  "p": 0.0,
+  "multipliers": {
+   "reset": 1,
+   "meas": 1,
+   "gate2": 1,
+   "idle": 1,
+   "round_data": 0,
+   "idle_ancilla": 0
+  },
+  "description": "circuit-level bravyi_cal channel set (D-29), ideal state preparation"
+ },
+ "rounds": {
+  "value": 3,
+  "meaning": "gauging rounds r of every setting that needs gauging (readout-only settings: 0)"
+ },
+ "rounds_surgery": 3,
+ "decoders": {
+  "local:XX": "relay",
+  "local:XY": "relay",
+  "local:XZ": "relay",
+  "local:YX": "relay",
+  "local:YY": "relay",
+  "local:YZ": "relay",
+  "local:ZX": "relay",
+  "local:ZY": "relay",
+  "local:ZZ": "relay"
+ },
+ "ensemble": {
+  "local:XX": {
+   "probability": 0.1111111111111111,
+   "strings": [
+    "XI",
+    "IX"
+   ],
+   "cost": {
+    "merged_rounds": 0,
+    "data_qubits": 72,
+    "initial_data_qubits": 72,
+    "ancilla_qubits": 0,
+    "initial_ancilla_qubits": 72,
+    "extra_qubits": 0,
+    "circuit_layers": 0
+   }
+  },
+  "local:XY": {
+   "probability": 0.1111111111111111,
+   "strings": [
+    "XI",
+    "IY"
+   ],
+   "cost": {
+    "merged_rounds": 3,
+    "data_qubits": 92,
+    "initial_data_qubits": 72,
+    "ancilla_qubits": 93,
+    "initial_ancilla_qubits": 72,
+    "extra_qubits": 41,
+    "circuit_layers": 88
+   }
+  },
+  "local:XZ": {
+   "probability": 0.1111111111111111,
+   "strings": [
+    "XI",
+    "IZ"
+   ],
+   "cost": {
+    "merged_rounds": 3,
+    "data_qubits": 81,
+    "initial_data_qubits": 72,
+    "ancilla_qubits": 82,
+    "initial_ancilla_qubits": 72,
+    "extra_qubits": 19,
+    "circuit_layers": 52
+   }
+  },
+  "local:YX": {
+   "probability": 0.1111111111111111,
+   "strings": [
+    "YI",
+    "IX"
+   ],
+   "cost": {
+    "merged_rounds": 3,
+    "data_qubits": 92,
+    "initial_data_qubits": 72,
+    "ancilla_qubits": 93,
+    "initial_ancilla_qubits": 72,
+    "extra_qubits": 41,
+    "circuit_layers": 85
+   }
+  },
+  "local:YY": {
+   "probability": 0.1111111111111111,
+   "strings": [
+    "YI",
+    "IY"
+   ],
+   "cost": {
+    "merged_rounds": 3,
+    "data_qubits": 112,
+    "initial_data_qubits": 72,
+    "ancilla_qubits": 114,
+    "initial_ancilla_qubits": 72,
+    "extra_qubits": 82,
+    "circuit_layers": 91
+   }
+  },
+  "local:YZ": {
+   "probability": 0.1111111111111111,
+   "strings": [
+    "YI",
+    "IZ"
+   ],
+   "cost": {
+    "merged_rounds": 3,
+    "data_qubits": 92,
+    "initial_data_qubits": 72,
+    "ancilla_qubits": 93,
+    "initial_ancilla_qubits": 72,
+    "extra_qubits": 41,
+    "circuit_layers": 85
+   }
+  },
+  "local:ZX": {
+   "probability": 0.1111111111111111,
+   "strings": [
+    "ZI",
+    "IX"
+   ],
+   "cost": {
+    "merged_rounds": 3,
+    "data_qubits": 81,
+    "initial_data_qubits": 72,
+    "ancilla_qubits": 82,
+    "initial_ancilla_qubits": 72,
+    "extra_qubits": 19,
+    "circuit_layers": 55
+   }
+  },
+  "local:ZY": {
+   "probability": 0.1111111111111111,
+   "strings": [
+    "ZI",
+    "IY"
+   ],
+   "cost": {
+    "merged_rounds": 3,
+    "data_qubits": 92,
+    "initial_data_qubits": 72,
+    "ancilla_qubits": 93,
+    "initial_ancilla_qubits": 72,
+    "extra_qubits": 41,
+    "circuit_layers": 88
+   }
+  },
+  "local:ZZ": {
+   "probability": 0.1111111111111111,
+   "strings": [
+    "ZI",
+    "IZ"
+   ],
+   "cost": {
+    "merged_rounds": 0,
+    "data_qubits": 72,
+    "initial_data_qubits": 72,
+    "ancilla_qubits": 0,
+    "initial_ancilla_qubits": 72,
+    "extra_qubits": 0,
+    "circuit_layers": 0
+   }
+  }
+ },
+ "draws": 1800,
+ "sampling": "fixed_per_setting: every setting exactly shots_per_setting times, in setting blocks (sorted setting order); probability = 1/3^m is the exact fraction",
+ "shots_per_setting": 200,
+ "draw_seed": null,
+ "logical_qubits_used": [
+  0,
+  1
+ ],
+ "spectators": "BB72 logical qubits 3..11 (and 2 for Bell) are maximally mixed",
+ "logical_noise": null,
+ "known_answers": {
+  "fidelity_ideal": 1.0,
+  "fidelity_with_logical_noise": 1.0,
+  "fidelity_expected_noisy": 1.0,
+  "fidelity_expected_noisy_se": 0.0,
+  "fidelity_formula": "F = 2^-m sum over the 2^m stabilizer-group elements g of sign(g) <g>; Bell: (1 + <XX> - <YY> + <ZZ>)/4",
+  "stabilizer_group": [
+   {
+    "pauli": "XX",
+    "sign": 1
+   },
+   {
+    "pauli": "ZZ",
+    "sign": 1
+   },
+   {
+    "pauli": "YY",
+    "sign": -1
+   }
+  ],
+  "note": "expected_noisy(P) = mean over the settings S measuring P of (1 - 2 q_{P,S}) * exact_with_logical_noise(P); q_mean = (1 - mean_S(1 - 2 q_{P,S}))/2. q from handover/calibration_local.csv, calibrated on +1 eigenstates at the same p and r. se: each calibrated q (sigma = 95% Wilson CI width / 3.92) shifted in turn, contributions added in quadrature, so values sharing a q are fully correlated. null = no calibration for this (code, d, r)."
+ },
+ "calibration_source": null,
+ "code_version": "8f80b3600d147412",
+ "generator": "code/handover/make_local_datasets.py",
+ "state_for_testing": [
+  {
+   "generator": "XX",
+   "sign": 1
+  },
+  {
+   "generator": "ZZ",
+   "sign": 1
+  }
+ ],
+ "runtime_s": 11.1
+}

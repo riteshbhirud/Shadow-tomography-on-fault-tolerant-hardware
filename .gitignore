@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Environments
+.venv/
+.venv_*/
+venv/
+.env
+.env.*
+
+# Julia
+*.jl.cov
+*.jl.mem
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+
+# Downloaded papers and LaTeX sources (copyright): not redistributed
+papers/
+
+# Generated results, logs and caches (regenerate with scripts/run_all.sh)
+results/
+*.log
+*.npz
+*.stim.gz
+
+# Worktrees and scratch
+.worktrees/
+scratch/
+
+# Notes, decision logs and the handover package for collaborators: kept locally, not published
+docs/
+handover/
+
+# Local copy of the original Python code, used by the :pyref tests only
+reference/
+test/Manifest.toml
+.CondaPkg/
+test/.CondaPkg/

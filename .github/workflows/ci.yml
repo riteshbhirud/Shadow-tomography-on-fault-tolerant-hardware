@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      # The Python tools FTShadows calls through PythonCall (stim, PyMatching, Relay-BP, ldpc, numpy).
+      - name: Python environment for the bridge
+        run: |
+          uv venv --python 3.12
+          uv pip install -r python/requirements.txt
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.12"
+      - uses: julia-actions/cache@v2
+      - name: Julia fast tests
+        env:
+          FTSHADOWS_TEST: fast
+        run: julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.test()'

@@ -1,0 +1,131 @@
+{
+ "case": "bb72_gauge_X0",
+ "code": "bb72",
+ "setting": "gauge:X0",
+ "state": [
+  [
+   "XIZIIIYIXIYY",
+   1
+  ],
+  [
+   "ZIZIIIYZIXYZ",
+   1
+  ],
+  [
+   "IXZIIIZXIIYZ",
+   0
+  ],
+  [
+   "IZZIIIZXXZYX",
+   0
+  ],
+  [
+   "IIXIIIIZIYIZ",
+   0
+  ],
+  [
+   "IIIXIIXXXYYX",
+   0
+  ],
+  [
+   "IIIZIIZZXIZI",
+   0
+  ],
+  [
+   "IIIIXIZIIZZY",
+   0
+  ],
+  [
+   "IIIIZIZYXYYX",
+   0
+  ],
+  [
+   "IIIIIXYZXXXX",
+   0
+  ],
+  [
+   "IIIIIZIIIXZX",
+   1
+  ],
+  [
+   "IIIIIIIIZXXY",
+   0
+  ]
+ ],
+ "p": 0.001,
+ "shots": 10,
+ "seed": 5,
+ "params": {
+  "rounds": 2
+ },
+ "outcomes": [
+  "0",
+  "0",
+  "0",
+  "0",
+  "0",
+  "0",
+  "1",
+  "1",
+  "0",
+  "1"
+ ],
+ "raw": [
+  "0",
+  "0",
+  "0",
+  "0",
+  "0",
+  "0",
+  "1",
+  "1",
+  "0",
+  "1"
+ ],
+ "confidence": [
+  "11.763633369827044",
+  "11.708022500373673",
+  "11.708022500373673",
+  "0.19100459483393095",
+  "8.572496629764306",
+  "8.921999857840294",
+  "16.99802627476315",
+  "17.641115631328276",
+  "11.732111789181069",
+  "11.732111789181069"
+ ],
+ "kind": [
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx",
+  "approx"
+ ],
+ "cost": {
+  "merged_rounds": 2,
+  "data_qubits": 81,
+  "initial_data_qubits": 72,
+  "ancilla_qubits": 82,
+  "initial_ancilla_qubits": 72,
+  "extra_qubits": 19,
+  "circuit_layers": 35
+ },
+ "meta": {
+  "p": 0.001,
+  "noise": "bravyi_cal",
+  "shots": 10,
+  "decoder": "relay",
+  "seed": 5,
+  "detectors": 198,
+  "name": "bb72_gauge_X_r2"
+ },
+ "setting_labels": [
+  "XIIIIIIIIIII"
+ ],
+ "records_sha256": "e943e407a7c2f3dba7ecb353dde50e509de535b3fab6cc013e03811a801dcd96"
+}

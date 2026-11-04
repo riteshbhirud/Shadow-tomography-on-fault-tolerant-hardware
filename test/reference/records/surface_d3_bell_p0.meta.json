@@ -1,0 +1,154 @@
+{
+ "format_version": "1.1",
+ "dataset": "surface_d3_bell_p0",
+ "created": "2026-10-31",
+ "code": {
+  "name": "rotated surface code",
+  "distance": 3,
+  "patches": 2,
+  "logical_basis": "per patch: Xbar = X on the top row, Zbar = Z on the left column"
+ },
+ "n_logical": 2,
+ "logical_qubit_order": "character i of every Pauli string = logical qubit i (0-based)",
+ "conventions": {
+  "outcome_bit": "0 -> eigenvalue +1, 1 -> eigenvalue -1 of the listed Hermitian string",
+  "Y": "Y_i = i X_i Z_i (the Hermitian logical Y of qubit i); strings are tensor products, no extra phase",
+  "setting": "all strings of one setting commute and are measured jointly on the same shot",
+  "confidence": "complementary gap ln[P(best)/P(best with this outcome flipped)], >= 0, minimum over the setting's strings; meaning of each value given by confidence_kind",
+  "confidence_kind": "exact | approx | not_found | decoder_failed | unavailable | noiseless (INTERFACE.md section 2)",
+  "state_for_testing": "'sign' is +1 or -1 (not a sign bit)"
+ },
+ "noise": {
+  "model": "none",
+  "p": 0.0,
+  "multipliers": {
+   "reset": 1,
+   "meas": 1,
+   "gate2": 1,
+   "idle": 1,
+   "round_data": 0,
+   "idle_ancilla": 0
+  },
+  "description": "circuit-level (Bravyi et al. 2308.07915 channel set, D-29): reset and measurement flips p, DEPOLARIZE2(p) after every 2-qubit gate, DEPOLARIZE1(p) on idle data qubits in every layer; ideal (noiseless) state preparation; destructive readout flips p"
+ },
+ "rounds_surgery": 3,
+ "decoders": {
+  "local:XX": "pymatching",
+  "local:XZ": "pymatching",
+  "local:ZX": "pymatching",
+  "local:ZZ": "pymatching",
+  "surgery:XX": "pymatching",
+  "surgery:ZZ": "pymatching"
+ },
+ "ensemble": {
+  "local:XX": {
+   "probability": 0.125,
+   "strings": [
+    "XI",
+    "IX"
+   ],
+   "cost": {
+    "merged_rounds": 0,
+    "data_qubits": 18,
+    "initial_data_qubits": 18,
+    "ancilla_qubits": 0,
+    "initial_ancilla_qubits": 16,
+    "extra_qubits": 0,
+    "circuit_layers": 0
+   }
+  },
+  "local:XZ": {
+   "probability": 0.125,
+   "strings": [
+    "XI",
+    "IZ"
+   ],
+   "cost": {
+    "merged_rounds": 0,
+    "data_qubits": 18,
+    "initial_data_qubits": 18,
+    "ancilla_qubits": 0,
+    "initial_ancilla_qubits": 16,
+    "extra_qubits": 0,
+    "circuit_layers": 0
+   }
+  },
+  "local:ZX": {
+   "probability": 0.125,
+   "strings": [
+    "ZI",
+    "IX"
+   ],
+   "cost": {
+    "merged_rounds": 0,
+    "data_qubits": 18,
+    "initial_data_qubits": 18,
+    "ancilla_qubits": 0,
+    "initial_ancilla_qubits": 16,
+    "extra_qubits": 0,
+    "circuit_layers": 0
+   }
+  },
+  "local:ZZ": {
+   "probability": 0.125,
+   "strings": [
+    "ZI",
+    "IZ"
+   ],
+   "cost": {
+    "merged_rounds": 0,
+    "data_qubits": 18,
+    "initial_data_qubits": 18,
+    "ancilla_qubits": 0,
+    "initial_ancilla_qubits": 16,
+    "extra_qubits": 0,
+    "circuit_layers": 0
+   }
+  },
+  "surgery:XX": {
+   "probability": 0.25,
+   "strings": [
+    "XX"
+   ],
+   "cost": {
+    "merged_rounds": 3,
+    "data_qubits": 21,
+    "initial_data_qubits": 18,
+    "ancilla_qubits": 20,
+    "initial_ancilla_qubits": 16,
+    "extra_qubits": 7,
+    "circuit_layers": 37
+   }
+  },
+  "surgery:ZZ": {
+   "probability": 0.25,
+   "strings": [
+    "ZZ"
+   ],
+   "cost": {
+    "merged_rounds": 3,
+    "data_qubits": 21,
+    "initial_data_qubits": 18,
+    "ancilla_qubits": 20,
+    "initial_ancilla_qubits": 16,
+    "extra_qubits": 7,
+    "circuit_layers": 37
+   }
+  }
+ },
+ "draws": 20000,
+ "draw_seed": 2214136476,
+ "code_version": "a62a78ceda53b19b",
+ "generator": "code/handover/make_datasets.py",
+ "state_for_testing": [
+  {
+   "generator": "XX",
+   "sign": 1
+  },
+  {
+   "generator": "ZZ",
+   "sign": 1
+  }
+ ],
+ "runtime_s": 0.6
+}

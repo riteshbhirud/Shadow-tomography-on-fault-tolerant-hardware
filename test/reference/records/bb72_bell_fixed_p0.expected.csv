@@ -1,0 +1,16 @@
+pauli,weight,exact,exact_with_logical_noise,expected_noisy,expected_noisy_se,lambda_P,settings,q_mean
+IX,1,0,0,0.0,0.0,0.333333333333,local:XX;local:YX;local:ZX,0.0
+IY,1,0,0,0.0,0.0,0.333333333333,local:XY;local:YY;local:ZY,0.0
+IZ,1,0,0,0.0,0.0,0.333333333333,local:XZ;local:YZ;local:ZZ,0.0
+XI,1,0,0,0.0,0.0,0.333333333333,local:XX;local:XY;local:XZ,0.0
+XX,2,1,1,1.0,0.0,0.111111111111,local:XX,0.0
+XY,2,0,0,0.0,0.0,0.111111111111,local:XY,0.0
+XZ,2,0,0,0.0,0.0,0.111111111111,local:XZ,0.0
+YI,1,0,0,0.0,0.0,0.333333333333,local:YX;local:YY;local:YZ,0.0
+YX,2,0,0,0.0,0.0,0.111111111111,local:YX,0.0
+YY,2,-1,-1,-1.0,0.0,0.111111111111,local:YY,0.0
+YZ,2,0,0,0.0,0.0,0.111111111111,local:YZ,0.0
+ZI,1,0,0,0.0,0.0,0.333333333333,local:ZX;local:ZY;local:ZZ,0.0
+ZX,2,0,0,0.0,0.0,0.111111111111,local:ZX,0.0
+ZY,2,0,0,0.0,0.0,0.111111111111,local:ZY,0.0
+ZZ,2,1,1,1.0,0.0,0.111111111111,local:ZZ,0.0
