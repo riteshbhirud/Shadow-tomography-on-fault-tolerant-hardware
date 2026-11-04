@@ -3,15 +3,20 @@
 
 using SparseArrays
 
-# numpy's float64 log calls the C library; Julia's own `log` differs from it in about 1e-4 of cases.
+# The C library's log, for code that copies C routines (scipy's ndtri). Julia's own `log` differs from
+# it in about 1e-4 of cases.
 _clog(x::Float64) = @ccall log(x::Float64)::Float64
 
 """
     llr(p)
+    llr(ps::Vector{Float64})
 
-Log-likelihood weight `ln((1 - p) / p)` of a mechanism with probability `p`, computed as numpy does.
+Log-likelihood weight `ln((1 - p) / p)` of a mechanism with probability `p`, from numpy's `log`
+(one scalar call, or one call on the whole vector). numpy's float64 log is the C library's on some
+platforms and its own SIMD loop on others (x86 Linux), so the weights are numpy's on every platform.
 """
-llr(p::Float64) = _clog((1 - p) / p)
+llr(p::Float64) = pyconvert(Float64, pymodule(:numpy).log((1 - p) / p))
+llr(ps::Vector{Float64}) = pyconvert(Vector{Float64}, pymodule(:numpy).log(pymodule(:numpy).asarray((1 .- ps) ./ ps)))
 
 # numpy's pairwise summation (pairwise_sum_DOUBLE, unrolled by 8, blocks of 128).
 function _pairwise(a::AbstractVector{Float64}, lo::Int, n::Int)

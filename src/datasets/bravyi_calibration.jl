@@ -6,12 +6,12 @@ const BRAVYI_NC = 6
 const BRAVYI_CHUNK = 2000
 const BRAVYI_FIT = (11.09, 365.6, -16088)
 
-# Python's float ** and numpy's exp call the C library; Julia's own pow and exp can differ in the last bit.
+# Python's float ** calls the C library's pow; Julia's own `^` can differ in the last bit. The exp in the
+# fit is numpy's (its SIMD loop differs from the C library on x86 Linux).
 _cpow(x::Float64, y::Float64) = @ccall pow(x::Float64, y::Float64)::Float64
-_cexp(x::Float64) = @ccall exp(x::Float64)::Float64
 
 """The paper's fit pL(p) = p^3 exp(c0 + c1 p + c2 p^2)."""
-bravyi_fit_pl(p::Float64) = _cpow(p, 3.0) * _cexp(BRAVYI_FIT[1] + BRAVYI_FIT[2] * p + BRAVYI_FIT[3] * p * p)
+bravyi_fit_pl(p::Float64) = _cpow(p, 3.0) * pyconvert(Float64, pymodule(:numpy).exp(BRAVYI_FIT[1] + BRAVYI_FIT[2] * p + BRAVYI_FIT[3] * p * p))
 
 """32-bit seed of chunk `chunk` of a configuration tag (SHA-256 of "tag|chunk", first 4 bytes little-endian)."""
 bravyi_seed(tag::AbstractString, chunk::Integer) = Int(ltoh(reinterpret(UInt32, sha256("$tag|$chunk")[1:4])[1]))

@@ -14,7 +14,7 @@ function _Hyper(dem::Dem)
     H, L, p = dem_to_matrices(dem)
     Lt = sparse(transpose(L))
     Lrows = [rowvals(Lt)[nzrange(Lt, j)] for j in 1:size(L, 1)]
-    return _Hyper(H, L, p, llr.(p), Lrows)
+    return _Hyper(H, L, p, llr(Vector{Float64}(p)), Lrows)
 end
 
 _no(h::_Hyper) = size(h.L, 1)

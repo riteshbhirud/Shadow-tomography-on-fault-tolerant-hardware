@@ -136,7 +136,11 @@ end
 @testitem "BP-OSD fallback when both hypotheses fail" tags = [:decode] begin
     # the original code raises here (int() of a 1-element array under numpy 2.5), so this path is checked on its own:
     # odd syndromes are outside the column space, so each observable falls back to the plain decode.
-    dec = BPOSDGapDecoder(FTShadows.read_dem("error(0.1) D0 D1 L0\nerror(0.1) D1 D2 L1\nerror(0.05) D0 D2"))
+    # The weak mechanisms give the check matrix more columns than rows plus the OSD order (7); with
+    # fewer, ldpc's OSD-CS setup reads out of bounds (it crashed on Linux).
+    obs = ["", " L0", " L1", " L0 L1"]
+    weak = ["error(0.0001) $d$o" for (d, o0) in (("D0 D1", " L0"), ("D1 D2", " L1"), ("D0 D2", "")) for o in obs if o != o0]
+    dec = BPOSDGapDecoder(FTShadows.read_dem(join(["error(0.1) D0 D1 L0", "error(0.1) D1 D2 L1", "error(0.05) D0 D2", weak...], "\n")))
     dets = UInt8[(i >> (3 - k)) & 1 for i in 0:7, k in 1:3]
     pred, gap, kind = decode(dec, dets)
     odd = isodd.(vec(sum(dets; dims = 2)))
