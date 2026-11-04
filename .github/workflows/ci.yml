@@ -6,7 +6,9 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # stim gives the same shots for a seed only on the same kind of CPU, and the reference shots in
+    # test/reference come from Apple Silicon, so the exact-shot tests run there.
+    runs-on: macos-latest
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
