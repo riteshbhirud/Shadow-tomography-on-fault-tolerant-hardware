@@ -1,6 +1,5 @@
-# Record bitsets with the semantics of Python ints used as bitsets:
-# immutable values, xor, highest set bit, popcount. Stored as little-endian UInt64 chunks
-# without trailing zero chunks, so == and hash are plain vector comparisons.
+# Immutable bitsets over measurement-record ids: xor, highest set bit, popcount. Stored as
+# little-endian UInt64 chunks without trailing zero chunks, so == and hash compare the vectors.
 
 struct Bits
     c::Vector{UInt64}
@@ -18,7 +17,7 @@ end
 """
     bit(i)
 
-The bitset with only bit `i` (0-based) set, like Python's `1 << i`.
+The bitset with only bit `i` (0-based) set.
 """
 function bit(i::Integer)
     c = zeros(UInt64, (i >> 6) + 1)
@@ -50,7 +49,7 @@ Base.count_ones(a::Bits) = sum(count_ones, a.c; init=0)
 """
     topbit(a)
 
-Index of the highest set bit (Python's `a.bit_length() - 1`), or -1 for zero.
+Index of the highest set bit, or -1 for zero.
 """
 topbit(a::Bits) = iszero(a) ? -1 : 64 * (length(a.c) - 1) + 63 - leading_zeros(a.c[end])
 
@@ -79,7 +78,7 @@ bits_of(ids) = foldl(xor, (bit(i) for i in ids); init=Bits())
 """
     rank_bits(vecs)
 
-GF(2) rank of a list of bitsets (builder._gf2_rank_bits).
+GF(2) rank of a list of bitsets.
 """
 function rank_bits(vecs)
     rows = Dict{Int,Bits}()

@@ -1,7 +1,7 @@
-# Gauging graphs. The construction follows networkx, whose results depend on adjacency order
-# (insertion order of edges, kept by Graph.copy in its own way): shortest paths (bidirectional
-# BFS), BFS trees and edge iteration decide the deformed checks and flux cycles. `PyGraph`
-# reproduces networkx 3.7 for the operations used; order-free questions go to Graphs.jl.
+# Gauging graphs. The deformed checks and flux cycles depend on adjacency order through shortest
+# paths (bidirectional BFS), BFS trees and edge iteration. The stored circuits were built with
+# networkx, so `PyGraph` keeps networkx 3.7's node and adjacency order for the operations used.
+# Order-free questions go to Graphs.jl.
 
 """
     PyGraph()

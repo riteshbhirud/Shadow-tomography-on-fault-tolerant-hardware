@@ -1,8 +1,7 @@
-# The v1.0/v1.1 handover datasets: surface d = 3 Bell, singlet, GHZ and a
-# random entangled 3-qubit state under a mixed local/surgery ensemble, and a BB72 random CSS state under
-# readout plus Ybar_0 gauging; noiseless and p = 1e-3. Exact values come from the logical state only.
-# Draws are numpy's default_rng through the bridge and sampling goes through stim, so the records equal
-# the stored ones.
+# The v1.0/v1.1 datasets: surface d = 3 Bell, singlet, GHZ and a random entangled 3-qubit state under a
+# mixed local/surgery ensemble, and a BB72 random CSS state under readout plus Ybar_0 gauging, each noiseless
+# and at p = 1e-3. Exact values come from the logical state only. Setting draws use numpy's default_rng so
+# a regenerated dataset has the same shots as the published one.
 
 const R_SURGERY = 3
 
@@ -72,8 +71,8 @@ end
 """
     v1_datasets(draws=20000, bb_draws=10000) -> Vector{OrderedDict}
 
-Specs of the ten v1 datasets in the reference's order: per p ∈ (0, 1e-3), surface Bell, singlet, GHZ,
-random3, then BB72 randomcss12. The random3 state is the first seeded random 3-qubit state with no
+Specs of the ten v1 datasets: per p ∈ (0, 1e-3), surface Bell, singlet, GHZ, random3, then BB72
+randomcss12. The random3 state is the first seeded random 3-qubit state with no
 single-qubit stabilizer element; the BB72 state is a -Ybar_0 eigenstate times a seeded random CSS state.
 """
 function v1_datasets(draws::Integer = 20000, bb_draws::Integer = 10000)
@@ -122,7 +121,6 @@ end
     generate_v1(spec, dir; pmap=map, code_version="unknown", generator=..., created=today) -> number of targets
 
 Simulate one v1 dataset and write `<name>.meta.json`, `.records.jsonl` and `.exact.csv` into `dir`.
-The setting draw is numpy's `default_rng(seed).choice` through the bridge.
 """
 function generate_v1(spec, dir::AbstractString; pmap = map, code_version = "unknown",
                      generator = "scripts/make_datasets.jl", created = Libc.strftime("%Y-%m-%d", time()))

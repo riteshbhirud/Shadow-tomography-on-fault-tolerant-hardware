@@ -19,7 +19,7 @@
 
     anticommute(a, b) = isodd(count(x != 'I' && y != 'I' && x != y for (x, y) in zip(a, b)))
 
-    """Nonempty subsets of 0:m-1 in itertools order: by size, then lexicographic."""
+    """Nonempty subsets of 0:m-1, by size, then lexicographic."""
     function subsets(m)
         out = Vector{Vector{Int}}()
         function rec(cur, start, r)
@@ -80,7 +80,7 @@ end
     using JSON
     using FTShadows.Circuits: setting_experiment, exact_expectation
     using .Props: st, check_setting!, holm_ok, anticommute
-    # the random states and the numpy-drawn local settings are the exported ones
+    # the random states and the numpy-drawn local settings are the stored ones
     S = JSON.parsefile(Props.STATES)
     for np in (2, 3)
         pvals, signs_seen, single = Float64[], Dict{String,Set{Int}}(), Dict{String,Set{Int}}()
@@ -348,8 +348,7 @@ end
 @testitem "audit: gap is calibrated for r = 2, conjugate" tags = [:properties] begin
     using Statistics
     using FTShadows.Circuits: multi_patch_surgery
-    # confidence >= 6 means an error rate
-    # well below 1%
+    # confidence >= 6 means an error rate well below 1%
     res = run_oracle(multi_patch_surgery(3, 2, "ZZ", [("ZI", 0), ("IZ", 0)], 2), 2e-3, 60000; seed=9)
     hi = res.confidence .>= 6
     @test count(hi) > 1000

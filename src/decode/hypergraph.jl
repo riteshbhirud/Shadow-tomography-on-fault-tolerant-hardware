@@ -1,4 +1,4 @@
-# BP-type decoders on hypergraph DEMs (BB codes): ldpc BP-OSD and Relay-BP, bridged; the
+# BP-type decoders on hypergraph DEMs (BB codes). ldpc BP-OSD and Relay-BP do the decoding. The
 # hypothesis split, the plain-anchored gap and the fallbacks are done here.
 
 # What every hypergraph decoder keeps about its DEM.
@@ -86,7 +86,7 @@ function decode(dec::BPOSDGapDecoder, dets::AbstractMatrix; with_gap::Bool = tru
             Hj = _with_obs(h, j)
             w = [_w(_bposd_constrained(dec, ("flip", j - 1), Hj, vcat(D[s, :], UInt8(o)))) for o in 0:1]
             if isinf(w[1]) && isinf(w[2])
-                # Python's int(L[j] @ e0 % 2) raises on numpy >= 2.5 here; this is the intended value
+                # no valid correction for either value: predict from a plain decode, gap 0
                 e0 === nothing && (e0 = _bposd_decode(dec, "H", h.H, D[s, :]))
                 pred[s, j] = _obs_parity(h, j, e0)
                 g = 0.0
@@ -177,14 +177,14 @@ end
 """
     RelayAnchoredGapDecoder(dem; comp="relay", comp_kw=nothing, kw...)
 
-Plain-anchored complementary gap (`relay`). Prediction and its weight come from one plain
-Relay-BP decode, so predictions equal `with_gap=false`. For each observable one more decode on
-`[H; L_j]` with the complementary value gives w_comp (`Inf` if it does not converge); the gap is
-max(w_comp - w_pred, 0), minimum over observables. A plain decode that does not converge gives gap 0
-(`decoder_failed`). The complementary decoder is Relay-BP with `kw` updated by `comp_kw` (default 20
-relay sets) or, with `comp="bposd"`, ldpc BP-OSD (min-sum scaling 1.0, OSD-CS order 7, updated by
-`comp_kw`). Negative gaps clipped to 0 are counted in `negative`, failed plain decodes in
-`plain_failures`.
+Plain-anchored complementary gap (`relay`). The prediction and its weight come from one plain
+Relay-BP decode, so predictions are the same as with `with_gap=false`. For each observable, one more
+decode on `[H; L_j]` with the complementary value gives w_comp (`Inf` if it does not converge), and
+the gap is max(w_comp - w_pred, 0), minimum over observables. A plain decode that does not converge
+gives gap 0 (`decoder_failed`).
+
+The complementary decoder is Relay-BP with `kw` updated by `comp_kw` (default 20 relay sets), or ldpc
+BP-OSD (min-sum scaling 1.0, OSD-CS order 7) with `comp="bposd"`.
 """
 mutable struct RelayAnchoredGapDecoder
     h::_Hyper
@@ -205,7 +205,7 @@ function RelayAnchoredGapDecoder(dem::Dem; comp::AbstractString = "relay", comp_
     no = _no(h)
     decs, bposd = Py[], Py[]
     if comp != "bposd"
-        # an empty comp_kw keeps the plain parameters (Python: `if comp_kw:`)
+        # comp_kw = nothing means 20 relay sets; an empty comp_kw keeps the plain parameters
         ckw = comp != "relay" ? (;) : comp_kw === nothing ? (num_sets = 20,) : _kwargs(comp_kw)
         decs = [_relay(h, _with_obs(h, j), merge(k, ckw)) for j in 1:no]
     else
@@ -234,7 +234,7 @@ function decode(dec::RelayAnchoredGapDecoder, dets::AbstractMatrix; with_gap::Bo
     ok = [r[1] for r in res]
     pred = UInt8[_obs_parity(h, j, res[s][2]) for s in 1:n, j in 1:no]
     with_gap || return pred, fill(NaN, n), fill("unavailable", n)
-    # (E.astype(bool) * llr).sum(axis=1): the zeros take part in numpy's summation order
+    # full-length sum including the zeros, which fixes the pairwise grouping of the terms
     w_pred = [npsum(Float64.(r[2] .!= 0) .* h.llr) for r in res]
     gaps = fill(Inf, n)
     for j in 1:no

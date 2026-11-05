@@ -1,10 +1,6 @@
-# Flip rates of the compiled BB72 local settings per string and subset product.
-# Joint +1 eigenstate of the setting's
-# strings, bravyi_cal p = 1e-3, plain Relay-BP, r = 3 and 6; resumable chunks in
-# results/taskA_julia/bb72_local_q_chunks/ (the reference's .npy files).
-# Run: julia --project=. scripts/taskA_bb72_local_calibration.jl [--ghz] [--shots 10000] [--shots-r6 5000]
-#      [--rounds 3 6] [--ghz-rounds 3] [--workers 8]
-# Output: results/taskA_julia/bb72_local_q.csv
+# Flip rates of the compiled BB72 local settings per string and subset product (joint +1 eigenstates, p = 1e-3, Relay-BP).
+# Run: julia --project=. scripts/taskA_bb72_local_calibration.jl [--ghz] [--shots 10000] [--shots-r6 5000] [--rounds 3 6] [--ghz-rounds 3] [--workers 8]
+# Output: results/taskA_julia/bb72_local_q.csv; resumes from bb72_local_q_chunks/
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")
@@ -14,7 +10,7 @@ const OUT = joinpath(REPO, "results", "taskA_julia")
 const CHUNK = 1000
 
 argval(flag, default) = (i = findfirst(==(flag), ARGS); i === nothing ? default : ARGS[i+1])
-function argvals(flag, default)  # nargs="+": every value up to the next flag
+function argvals(flag, default)  # every value up to the next flag
     i = findfirst(==(flag), ARGS)
     i === nothing && return default
     j = something(findnext(startswith("--"), ARGS, i + 1), length(ARGS) + 1)

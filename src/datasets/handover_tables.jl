@@ -1,6 +1,5 @@
-# The handover tables that are joins of earlier results (calibration, local calibration, native
-# ensembles) and the basis exports. The files are pandas-style CSV, so pandas' read and write typing
-# is reproduced here.
+# Tables that join earlier results (calibration, local calibration, native ensembles), and the basis
+# exports. The tables are pandas-style CSV, so pandas' read and write typing is reproduced here.
 
 #### pandas read_csv / to_csv typing
 
@@ -44,8 +43,8 @@ _pd_text(x::Bool) = x ? "True" : "False"
 """
     pandas_table(rows, cols; newline="\\n") -> CSVTable
 
-`pd.DataFrame(rows)[cols].to_csv(index=False)`: a key missing from a row is NaN, and a numeric
-column with any float or NaN in it is written as floats (an int 11 becomes `11.0`).
+Table in pandas `to_csv` format: a key missing from a row is NaN, and a numeric column with any float or
+NaN in it is written as floats (an int 11 becomes `11.0`).
 """
 function pandas_table(rows, cols; newline = "\n")
     data = [Any[get(r, c, NaN) for r in rows] for c in cols]
@@ -58,7 +57,7 @@ function pandas_table(rows, cols; newline = "\n")
     return CSVTable(collect(cols), [Any[_pd_text(data[j][i]) for j in eachindex(cols)] for i in eachindex(rows)], newline)
 end
 
-#### handover/calibration.csv
+#### calibration.csv
 
 const CALIBRATION_COLUMNS = ["section", "code", "distance", "setting_type", "target", "kind", "termination", "r",
     "noise_model", "p", "input_state", "shots", "errors", "q", "ci_lo", "ci_hi", "q_if_independent", "extra_qubits",
@@ -67,8 +66,8 @@ const CALIBRATION_COLUMNS = ["section", "code", "distance", "setting_type", "tar
 """
     calibration_rows(root; input=joinpath) -> Vector{Dict}
 
-The rows of handover/calibration.csv from the result tables under `root`:
-the dataset-setting flip rates, then the surface q(r) curves, the state-independence runs and BB72 q(r).
+The rows of calibration.csv from the result tables under `root`: the dataset-setting flip rates, then the
+surface q(r) curves, the state-independence runs and BB72 q(r).
 Each table is read from `input(root, "results", ...)` (scripts pass [`upstream`](@ref)).
 """
 function calibration_rows(root::AbstractString; input = joinpath)
@@ -104,7 +103,7 @@ function calibration_rows(root::AbstractString; input = joinpath)
     return rows
 end
 
-#### handover/calibration_local.csv
+#### calibration_local.csv
 
 const CALIBRATION_LOCAL_COLUMNS = ["code", "distance", "setting_id", "r", "target", "kind", "shots", "flips", "q",
     "ci_lo", "ci_hi", "noise", "p"]
@@ -112,8 +111,8 @@ const CALIBRATION_LOCAL_COLUMNS = ["code", "distance", "setting_id", "r", "targe
 """
     calibration_local_join(surface_q, bb72_q) -> Vector{Dict}
 
-The rows of handover/calibration_local.csv from `surface_local_q.csv` and,
-if the file exists, `bb72_local_q.csv` (per setting and target, at the rounds parameter).
+The rows of calibration_local.csv from `surface_local_q.csv` and, if it exists, `bb72_local_q.csv` (per
+setting and target, at the rounds parameter).
 """
 function calibration_local_join(surface_q::AbstractString, bb72_q::AbstractString)
     rows = Dict{String,Any}[]
@@ -134,10 +133,10 @@ function calibration_local_join(surface_q::AbstractString, bb72_q::AbstractStrin
     return rows
 end
 
-#### handover/native_ensembles/<code>_lambda_w3.csv
+#### native_ensembles/<code>_lambda_w3.csv
 
 const NATIVE_ENSEMBLES = ["readout_only", "shifts", "ibm", "aut", "albert_two_fold", "aut_plus_all_folds"]
-# the gross second fold family is unverified, so it stays out of the handover
+# the gross second fold family is unverified, so it is left out
 const NATIVE_EXCLUDE = Set([("gross", "aut_plus_all_folds")])
 
 """
@@ -162,8 +161,8 @@ end
 """
     limit_denominator(x::Rational, maxden) -> Rational
 
-Python's `Fraction.limit_denominator`: the closest fraction to `x` with denominator at most `maxden`
-(continued fractions; on a tie the convergent p1/q1 wins).
+Closest fraction to `x` with denominator at most `maxden`, by continued fractions. Ties go to the
+convergent p1/q1, as in Python's `Fraction.limit_denominator`.
 """
 function limit_denominator(x::Rational{BigInt}, maxden::Integer)
     denominator(x) <= maxden && return x
@@ -180,7 +179,7 @@ function limit_denominator(x::Rational{BigInt}, maxden::Integer)
     return 2 * d * (q0 + k * q1) <= denominator(x) ? p1 // q1 : (p0 + k * p1) // (q0 + k * q1)
 end
 
-"""`str(Fraction)`: "n/d", or "n" for an integer."""
+"""A fraction as "n/d", or "n" for an integer."""
 pyfraction(x::Rational) = denominator(x) == 1 ? string(numerator(x)) : "$(numerator(x))/$(denominator(x))"
 
 """Index of a k-qubit Pauli label in the λ tables: bit i = X on qubit i, bit k+i = Z on qubit i."""
@@ -194,7 +193,7 @@ function pauli_index(label::AbstractString, k::Integer)
     return v
 end
 
-"""All k-qubit Pauli labels of weight 1..wmax, by weight, then qubit subset, then letters (itertools order)."""
+"""All k-qubit Pauli labels of weight 1..wmax, ordered by weight, then qubit subset, then letters."""
 function low_weight_labels(k::Integer, wmax::Integer)
     labels = String[]
     for w in 1:wmax, qs in _combinations_sorted(k, w), letters in product_strings("XYZ", w)
@@ -207,7 +206,7 @@ function low_weight_labels(k::Integer, wmax::Integer)
     return labels
 end
 
-# itertools.combinations(1:n, w) in lexicographic order
+# size-w subsets of 1:n in lexicographic order
 function _combinations_sorted(n, w)
     out = Vector{Int}[]
     function rec(start, acc)
@@ -241,12 +240,12 @@ function native_ensemble_table(code::AbstractString, tables::AbstractDict; k::In
     return CSVTable(header, rows, "\r\n")
 end
 
-#### handover/bases/
+#### bases/
 
 const BASIS_CONVENTION = "physical qubit q = block*l*m + a*m + b for monomial x^a y^b (block 0 = L, 1 = R); " *
                          "H_X = [A|B], H_Z = [B^T|A^T]; logical qubit i is 0-based"
 
-"""The basis file content (make_bases.dump): sorted 0-based supports of every Xbar_i and Zbar_i."""
+"""Basis file content: sorted 0-based supports of every Xbar_i and Zbar_i."""
 basis_record(code_desc, l, m, xs, zs, note) = OrderedDict{String,Any}("code" => code_desc, "l" => l, "m" => m,
     "convention" => BASIS_CONVENTION, "note" => note, "xbar_support" => [sort!(Int.(collect(x))) for x in xs],
     "zbar_support" => [sort!(Int.(collect(z))) for z in zs])
@@ -254,8 +253,8 @@ basis_record(code_desc, l, m, xs, zs, note) = OrderedDict{String,Any}("code" => 
 """
     handover_bases() -> Vector{Pair{String,OrderedDict}}
 
-The four files of handover/bases/: the BB72 oracle and local bases, and the Task B f,g,h bases of
-BB72 and gross (`file name => content`).
+The four basis files (`file name => content`): the BB72 oracle and local bases, and the Task B f,g,h
+bases of BB72 and gross.
 """
 function handover_bases()
     bb = "BB72 [[72,12,6]], A = x^3 + y + y^2, B = y^3 + x + x^2"

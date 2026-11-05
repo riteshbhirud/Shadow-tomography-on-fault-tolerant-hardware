@@ -1,7 +1,7 @@
-# Full parity with the saved Task B reference results in results/taskB (local only, not tracked).
+# Full comparison with the stored Task B results in results/taskB (local, not tracked).
 # Every item is skipped with a message when that directory is missing. They need Oscar, hence :slow.
 
-@testitem "TaskB parity: generators, group orders, groups records" tags = [:slow] setup = [TaskBRef] begin
+@testitem "TaskB stored results: generators, group orders, groups records" tags = [:slow] setup = [TaskBRef] begin
     using Oscar, JSON, PythonCall
     import FTShadows.TaskB as TB
     if !TaskBRef.has_results()
@@ -28,7 +28,7 @@
     end
 end
 
-@testitem "TaskB parity: Pauli corrections and signed checks" tags = [:slow] setup = [TaskBRef] begin
+@testitem "TaskB stored results: Pauli corrections and signed checks" tags = [:slow] setup = [TaskBRef] begin
     using Oscar, JSON, Random
     import FTShadows.TaskB as TB
     if !TaskBRef.has_results()
@@ -62,7 +62,7 @@ end
     end
 end
 
-@testitem "TaskB parity: λ tables and shadow records" tags = [:slow] setup = [TaskBRef] begin
+@testitem "TaskB stored results: λ tables and shadow records" tags = [:slow] setup = [TaskBRef] begin
     using Oscar, JSON
     import FTShadows.TaskB as TB
     if !TaskBRef.has_results()
@@ -90,7 +90,7 @@ end
     end
 end
 
-@testitem "TaskB parity: La-cross" tags = [:slow] setup = [TaskBRef] begin
+@testitem "TaskB stored results: La-cross" tags = [:slow] setup = [TaskBRef] begin
     using Oscar, JSON
     import FTShadows.TaskB as TB
     if !TaskBRef.has_results()
@@ -104,7 +104,7 @@ end
     end
 end
 
-@testitem "TaskB parity: basis independence" tags = [:slow] setup = [TaskBRef] begin
+@testitem "TaskB stored results: basis independence" tags = [:slow] setup = [TaskBRef] begin
     using Oscar, JSON
     import FTShadows.TaskB as TB
     dir = joinpath(TaskBRef.RESULTS, "basis_independence")

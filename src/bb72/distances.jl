@@ -1,7 +1,6 @@
-# Deformed-code and circuit distances of BB72 gauging circuits (scripts taskA_bb_distances,
-# taskA_bb_gauss_order_screen, taskA_bb_schedule_search, taskA_bb72_local_distance,
-# taskA_bb72_Y_incomplete_flux, taskA_bb72_multi_distance, taskA_bb72_small_graph_search/verify).
-# Circuit distances are stim's search with at most 6 detection events and edge degree 8.
+# Deformed-code and circuit distances of BB72 gauging circuits (used by the scripts/taskA_bb*_distance,
+# schedule, flux, multi and small_graph scripts). Circuit distances come from stim's search with at most
+# 6 detection events and edge degree 8.
 
 using .Circuits: PauliDict, bb_setup, bb_gauging, build, stim_search, ordered_checks, cheeger,
                  cycle_basis_edges, code_distance_isd, code_distance_stim, PyGraph, add_node!, add_edge!,
@@ -53,7 +52,7 @@ end
 #### syndrome schedules and memory
 
 const _BB72_CSS = Ref{Any}(nothing)
-"""BB72 and its CSS logical basis (taskA_bb_schedule_search.CODE, BASIS)."""
+"""BB72 and its CSS logical basis (cached)."""
 function bb72_css()
     if _BB72_CSS[] === nothing
         code = Circuits.BBCode("bb72")
@@ -107,7 +106,7 @@ function local_distance_combos(ms)
     return out
 end
 
-"""Fields of a local-distance row from the deformed code (taskA_bb72_local_distance)."""
+"""Fields of a local-distance row from the deformed code."""
 function local_deformed_fields(bases, rounds)
     exp, _, comp = local_experiment(bases, [], rounds)
     d_isd, d_stim, k = deformed_distances(exp)
@@ -131,9 +130,9 @@ two_shortest(lens) = sort(argsort_stable(lens)[1:2] .- 1)
 """
     incomplete_flux_rows(rounds) -> Vector
 
-taskA_bb72_Y_incomplete_flux main: for the adopted E20 and the minimal E18 Ybar graphs, keep the two
-shortest flux checks, three random pairs (numpy `default_rng(20261030)`) or all of them, and search
-the circuit distance with the measured logical only.
+For the adopted E20 and the minimal E18 Ybar graphs, keep the two shortest flux checks, three random pairs
+(numpy `default_rng(20261030)`, so the pairs match the stored rows) or all of them, and search the circuit
+distance with the measured logical only.
 """
 function incomplete_flux_rows(rounds::Integer)
     out = OrderedDict{String,Any}[]
@@ -206,7 +205,7 @@ end
 """Symplectic logical basis (Pauli dicts) starting with the two measured logicals."""
 multi_basis(code, Ls) = [(vec_to_dict(a), vec_to_dict(b)) for (a, b) in logical_basis_with(code, [dict_to_vec(L, code.n) for L in Ls])]
 
-"""Independent Z-type logicals commuting with both measured logicals (taskA_bb72_multi_distance.spectators)."""
+"""Independent Z-type logicals commuting with both measured logicals."""
 function multi_spectators(code, Ls)
     n = code.n
     lv = [dict_to_vec(L, n) for L in Ls]
@@ -221,13 +220,13 @@ function multi_spectators(code, Ls)
     return out
 end
 
-"""Simultaneous gauging of the two Xbar for `rounds` rounds, Z readout (taskA_bb72_multi*)."""
+"""Simultaneous gauging of the two Xbar for `rounds` rounds, Z readout."""
 multi_experiment(code, Ls, rounds; kw...) =
     multi_gauging_experiment(code.n, ordered_checks(code), Ls, rounds, 'Z'; logical_basis = multi_basis(code, Ls), kw...)
 
 #### 6-edge graphs for Xbar_0 / Zbar_0
 
-"""Gauging graph on the sorted support of L with exactly these edges (nodes first, as networkx)."""
+"""Gauging graph on the sorted support of L with exactly these edges (nodes added first)."""
 function edge_graph(L::PauliDict, edges)
     G = PyGraph()
     foreach(v -> add_node!(G, v), sort(collect(keys(L))))
@@ -235,7 +234,7 @@ function edge_graph(L::PauliDict, edges)
     return G
 end
 
-"""Graph of an edge list alone, as `nx.Graph(edges)`."""
+"""Graph of an edge list alone."""
 function graph_of_edges(edges)
     G = PyGraph()
     foreach(e -> add_edge!(G, e[1], e[2]), edges)
@@ -245,7 +244,7 @@ end
 """
     small_graph_experiment(P, edges; rounds=6, spectators=false)
 
-Gauging of Pbar_0 on the given graph, checks routed along shortest paths (taskA_bb72_small_graph_search).
+Gauging of Pbar_0 on the given graph, checks routed along shortest paths.
 With `spectators`, every logical the readout reads is observed too, deformed through the graph.
 """
 function small_graph_experiment(P::Char, edges; rounds::Integer = 6, spectators::Bool = false)
@@ -265,7 +264,7 @@ function small_graph_experiment(P::Char, edges; rounds::Integer = 6, spectators:
                               name = "small_$P")
 end
 
-"""One screened graph: its circuit distance and graph data (taskA_bb72_small_graph_search.job)."""
+"""One screened graph: its circuit distance and graph data."""
 function small_graph_job(P::Char, edges, spectators::Bool; rounds::Integer = 6)
     t = time()
     exp = small_graph_experiment(P, edges; rounds, spectators)
@@ -279,7 +278,7 @@ end
 """
     small_graph_candidates(P) -> [(E, edges, cheeger)]
 
-Every connected graph with 5..8 edges on the 6 support qubits of Pbar_0, in itertools order.
+Every connected graph with 5..8 edges on the 6 support qubits of Pbar_0, in lexicographic order.
 """
 function small_graph_candidates(P::Char)
     V = sort(collect(keys(bb_setup().L[P])))
@@ -299,7 +298,7 @@ max_degree_of(es) = (G = graph_of_edges(es); maximum(degree(G, v) for v in G.nod
     noiseless_gauging_check(P, edges) -> (states, mismatches)
 
 Noiseless Pbar_0 gauging at r = 1 on this graph against the exact expectation, on 2 eigenstates
-and 4 random 12-qubit states (taskA_bb72_small_graph_verify.noiseless).
+and 4 random 12-qubit states.
 """
 function noiseless_gauging_check(P::Char, edges)
     bad, n = 0, 0

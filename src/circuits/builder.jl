@@ -1,4 +1,4 @@
-# Epoch circuit builder. An experiment is ideal preparation,
+# Epoch circuit builder. An experiment is ideal preparation, then
 # epochs of checks measured for r noisy rounds, then destructive readout. Detectors and
 # observables are derived by the tracker, never declared.
 
@@ -40,7 +40,7 @@ const StateGens = Vector{Tuple{PauliDict,Int}}
 """
     Experiment
 
-A code-deformation experiment (builder.Experiment): `n_data` qubits, `active0` initially active,
+A code-deformation experiment: `n_data` qubits, `active0` initially active,
 ideal `prep_checks` and `logical_state` (Pauli dict, sign bit) generators, `epochs`, the final
 `readout` basis per qubit and the logical `targets`. Unspecified logical qubits of
 `logical_basis` are prepared maximally mixed.

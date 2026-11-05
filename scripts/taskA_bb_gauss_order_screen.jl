@@ -1,6 +1,4 @@
-# Screen seeded Gauss-check gate orders for BB72 gauging by circuit distance.
-# A seed is refuted if stim finds
-# distance < 6; a search still running after the time limit counts as null.
+# Screen seeded Gauss-check gate orders for BB72 gauging: refuted if stim finds distance < 6, null if the search times out.
 # Run: julia --project=. scripts/taskA_bb_gauss_order_screen.jl P [KWARGS_JSON] [N_SEEDS]
 # Output: results/taskA_julia/bb72_gauss_order_screen_{P}.json
 const REPO = dirname(@__DIR__)
@@ -17,7 +15,7 @@ function run_batch(P, seeds, kw, limit)
     res = FTShadows.OrderedDict{Int,Any}()
     try
         Distributed.remotecall_eval(Main, wp, :(using FTShadows))
-        # compile the builder first so the time limit covers the search, like the reference's forked processes
+        # compile the builder first so the time limit covers only the search
         Distributed.remotecall_eval(Main, wp, :(FTShadows.Circuits.build(FTShadows.Circuits.bb_gauging('X', 1), 1e-3); nothing))
         # each result is fetched by a local task: asking a worker isready() would block while it sits in stim
         tasks = [@async remotecall_fetch(FTShadows.gauss_order_distance, w, P, sd, kw) for (sd, w) in zip(seeds, wp)]

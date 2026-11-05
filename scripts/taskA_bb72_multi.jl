@@ -1,7 +1,6 @@
-# Two commuting logicals {Xbar_a, Xbar_b} on BB72 by simultaneous gauging:
-# noiseless exactness, deformed-code distance, and
-# per-target / joint flip rates at r = 3, p = 1e-3.
-# Run: julia --project=. scripts/taskA_bb72_multi.jl    Output: results/taskA_julia/bb72_multi.json
+# Simultaneous gauging of two commuting logicals {Xbar_a, Xbar_b} on BB72: noiseless exactness, deformed distance, flip rates.
+# Run: julia --project=. scripts/taskA_bb72_multi.jl
+# Output: results/taskA_julia/bb72_multi.json
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")

@@ -17,7 +17,8 @@ const COST_COLUMNS = ["code", "distance", "m", "setting", "r", "implementation",
     local_setting_costs(surface_q, bb72_q) -> Vector{OrderedDict}
 
 The rows of `results/taskA/local_setting_costs.csv`, from the calibration tables `surface_local_q.csv` and
-`bb72_local_q.csv` (paths). The BB72 flip rates are joined in: the largest string q at the setting's rounds (3 for readout-only settings).
+`bb72_local_q.csv` (paths). `q_max_string` is the largest string flip rate at the setting's rounds (3 for
+readout-only BB72 settings).
 """
 function local_setting_costs(surface_q::AbstractString, bb72_q::AbstractString)
     sq = csv_rows(surface_q)
@@ -65,7 +66,7 @@ _cell(x) = x
 """
     write_setting_costs(path, rows)
 
-Write the cost rows as pandas' `to_csv(index=False)` does.
+Write the cost rows as CSV (pandas `to_csv` format: True/False, NaN empty).
 """
 function write_setting_costs(path::AbstractString, rows)
     write_csv_table(path, CSVTable(COST_COLUMNS, [Any[_cell(r[c]) for c in COST_COLUMNS] for r in rows], "\n"))

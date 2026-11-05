@@ -1,11 +1,12 @@
 # Brute-force validation of the shadow-norm formula on small logical systems.
 #
 # Independent of the orbit / symplectic code: the group is enumerated as signed QuantumClifford tableaux built
-# from gate circuits, the state is a dense Haar-random vector, outcomes are sampled from Born probabilities and
-# the classical-shadow estimator of Bu et al. is applied:
+# from gate circuits, the state is a dense Haar-random vector, outcomes are sampled from the Born rule and the
+# classical-shadow estimator of Bu et al. is applied:
 #   U = F g (F a uniform Pauli frame, g uniform in G), readout Z or X (Hᵏ before Z),
 #   ô = s (-1)^{b·z} / λ_P  if U P U† = s Z^z, else 0.
-# Dense states are little-endian: qubit q is bit q of the basis index (as stim's to_unitary_matrix(endian="little")).
+# Dense states are little-endian: qubit q is bit q of the basis index.
+# Random draws use numpy's default_rng so seeded runs reproduce the stored test samples.
 
 """
     circuit_clifford(gates, k)
@@ -14,9 +15,8 @@ The signed tableau of a gate list on `k` qubits.
 """
 circuit_clifford(gates, k::Integer) = then_gates!(one(CliffordOperator, k), gates)
 
-# c followed by the gates. The tableau rows (images of X_q, Z_q) are pushed through the gates as a Stabilizer:
-# in QuantumClifford 0.11.8, apply!(::CliffordOperator, op) with symbolic gates loses signs (S then S does not
-# give Z, and sX/sY/sZ leave the signs alone), while the Stabilizer path tracks them correctly.
+# c followed by the gates. The tableau rows go through the gates as a Stabilizer because in QuantumClifford
+# 0.11.8 apply!(::CliffordOperator, op) with symbolic gates loses signs (S then S does not give Z).
 function then_gates!(c::CliffordOperator, gates)
     s = Stabilizer(QuantumClifford.tab(c))
     for g in expand_gates(gates)
@@ -104,25 +104,22 @@ end
 """
     numpy_rng(seed)
 
-numpy's `default_rng(seed)` through the bridge. The brute-force sampling draws from it (as the
-datasets do), so the same seed gives exactly the reference samples.
+numpy's `default_rng(seed)` through PythonCall.
 """
 numpy_rng(seed::Integer) = pymodule(:numpy).random.default_rng(seed)
 
 """
     haar_state(k, rng)
 
-Haar-random k-qubit state vector from the numpy generator `rng`: real and imaginary parts from two
-`rng.normal` draws, divided by `np.linalg.norm` (numpy does the norm and the division, so the vector is the reference one
-bit for bit).
+Haar-random k-qubit state vector from the numpy generator `rng` (Gaussian real and imaginary parts,
+normalised).
 """
 function haar_state(k::Integer, rng::Py)
     np = pymodule(:numpy)
     re = pyconvert(Vector{Float64}, rng.normal(; size=1 << k))
     imp = pyconvert(Vector{Float64}, rng.normal(; size=1 << k))
     psi = np.asarray(complex.(re, imp))
-    # numpy divides the complex vector by the norm as a complex division, which is not always the same as
-    # dividing both parts, so the division is done by numpy too
+    # numpy's complex division by the norm can differ in the last bit from dividing both parts, so let numpy do it
     return pyconvert(Vector{ComplexF64}, np.divide(psi, np.linalg.norm(psi)))
 end
 
@@ -216,8 +213,7 @@ end
 
 Single-shot estimates (length(paulis) × shots) of the native classical shadow; `lam[v+1]` is λ_P of the
 packed Pauli v for the readout used ("Z", "X" or "mix", which picks Z or X with probability 1/2 per shot).
-`rng` is a numpy generator ([`numpy_rng`](@ref)), drawn from in the reference order, so the estimates equal
-the reference estimates at the same seed.
+`rng` is a numpy generator ([`numpy_rng`](@ref)).
 """
 function simulate_estimator(group, words, gen_circuits, psi, paulis, lam, k::Integer, shots::Integer, rng;
                             readout::AbstractString="Z")
@@ -226,7 +222,7 @@ function simulate_estimator(group, words, gen_circuits, psi, paulis, lam, k::Int
     ps = [pauli_from_vec(v, k) for v in paulis]
     np = pymodule(:numpy)
     for s in 1:shots
-        # the draws, in the reference order: group element, Pauli frame, readout basis, outcome
+        # draw order per shot: group element, Pauli frame, readout basis, outcome
         gi = pyconvert(Int, rng.integers(length(group))) + 1
         fv = pyconvert(Int, rng.integers(1 << 2k))
         rb = readout in ("Z", "X") ? readout : (pyconvert(Float64, rng.random()) < 0.5 ? "Z" : "X")
@@ -238,7 +234,7 @@ function simulate_estimator(group, words, gen_circuits, psi, paulis, lam, k::Int
         circ = [reduce(vcat, [gen_circuits[i] for i in words[gi]]; init=Gate[]); frame; rb == "X" ? hall : Gate[]]
         u = then_gates!(copy(group[gi]), [frame; rb == "X" ? hall : Gate[]])
         phi = apply_dense(circ, psi)
-        prob = abs.(phi) .^ 2   # as np.abs(phi) ** 2
+        prob = abs.(phi) .^ 2
         b = pyconvert(Int, rng.choice(1 << k; p=np.asarray(prob ./ np_sum(prob))))
         for (j, (v, p)) in enumerate(zip(paulis, ps))
             q = conjugate(u, p)

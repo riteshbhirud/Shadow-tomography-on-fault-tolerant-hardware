@@ -1,5 +1,4 @@
-# Export the logical bases used by the handover as explicit physical supports.
-# Qubit index q = block*l*m + a*m + b for monomial x^a y^b (block 0 = L, 1 = R; Bravyi et al.'s convention).
+# Logical bases of the datasets as explicit physical supports; qubit q = block*l*m + a*m + b for x^a y^b (Bravyi et al.'s convention).
 # Run: julia --project=. scripts/make_bases.jl [OUTDIR]   (default handover/data_julia/bases)
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))

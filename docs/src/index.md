@@ -83,5 +83,3 @@ FTSHADOWS_TEST=fast julia --project=. -e 'using Pkg; Pkg.test()'
     - The surgery and gauging schedules measure X-type and Z-type checks one after the other. They are not optimised, so their flip rates are pessimistic compared with an interleaved schedule.
     - The flip rate of a measured string is assumed not to depend on the input state. This was checked for single measurements, not for every multi-qubit BB72 setting.
     - Task B produces no shot records; its ensembles are evaluated at the logical level only.
-
-Results of this package were checked bit for bit against an earlier implementation of the same simulator.

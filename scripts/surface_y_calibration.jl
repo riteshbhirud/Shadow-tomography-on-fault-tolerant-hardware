@@ -1,6 +1,4 @@
-# Flip rate q(b) of the surface-code in-place Y measurement as a single-patch setting:
-# d = 3, 5, 7 and b = 0 .. d÷2 + 2; at the
-# default b also the -1 eigenstate and a Z eigenstate (<Y> = 0).
+# Flip rate q(b) of the surface-code in-place Y measurement, d = 3, 5, 7 and b = 0 .. d÷2 + 2 (plus -1 and Z eigenstates at default b).
 # Run: julia --project=. scripts/surface_y_calibration.jl [--workers 8]
 # Output: results/taskA_julia/surface_y_qr.csv
 const REPO = dirname(@__DIR__)

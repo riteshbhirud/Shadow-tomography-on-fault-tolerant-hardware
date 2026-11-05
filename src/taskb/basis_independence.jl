@@ -10,7 +10,7 @@ const CSS_TYPE_ENSEMBLES = ["readout_only", "shifts", "ibm", "aut"]
 """
     basis_labels(name; n_random=5, bravyi_seeds=1:8)
 
-Bases analysed for a code, in the reference order.
+Labels of the bases analysed for a code.
 """
 function basis_labels(name::AbstractString; n_random::Integer=5, bravyi_seeds=1:8)
     labels = vcat(["named", "generic"], ["random_css_$s" for s in 0:n_random-1])
@@ -21,7 +21,7 @@ end
 """
     random_css_basis(code0, seed)
 
-X̄′ = A X̄ + R_x H_X, Z̄′ = A^{-T} Z̄ + R_z H_Z with the A, R_x, R_z drawn for `seed` in the stored reference run.
+X̄′ = A X̄ + R_x H_X, Z̄′ = A^{-T} Z̄ + R_z H_Z, with the random A, R_x, R_z for `seed` read from `rng_inputs.json`.
 """
 function random_css_basis(code0::StabilizerCode, seed::Integer)
     d = rng_inputs()["random_css"][code0.name][string(seed)]
@@ -68,8 +68,8 @@ end
 """
     exact_spectrum(lab, k)
 
-Exact λ spectra (identity excluded) as reduced fractions with multiplicities, per readout, plus the orbit-size
-histogram; same layout as the per-basis JSON.
+Exact λ spectra (identity excluded) per readout as reduced fractions with multiplicities, plus the orbit-size
+histogram.
 """
 function exact_spectrum(lab::AbstractVector{UInt32}, k::Integer)
     xmask, zmask = pauli_masks(k)
@@ -110,8 +110,8 @@ end
 """
     analyse_basis(code, kept, k, wts)
 
-Spectrum, learnable counts, type split and per-weight table of every ensemble in this basis (the per-basis
-JSON; the timing fields only with `timings=true`). `kept` maps ensemble name to the physical kept `Element`s.
+Spectrum, learnable counts, type split and per-weight table of every ensemble in this basis. `kept` maps
+ensemble name to the kept physical `Element`s.
 """
 function analyse_basis(code::StabilizerCode, kept::AbstractDict, k::Integer, wts::AbstractVector; timings::Bool=false)
     xmask, zmask = pauli_masks(k)
@@ -174,8 +174,8 @@ end
 """
     basis_independence(name, code0, kept; labels=basis_labels(name), timings=false)
 
-Per-basis records (label => record, or a `failed` record) for every basis of one code. With `timings=true` the
-run times are recorded (`seconds` per ensemble, `seconds_total` per basis).
+Per-basis records (label => record, or a `failed` record) for every basis of one code. `timings=true` adds
+`seconds` per ensemble and `seconds_total` per basis.
 """
 function basis_independence(name::AbstractString, code0::StabilizerCode, kept::AbstractDict;
                             labels=basis_labels(name), timings::Bool=false)
@@ -201,8 +201,7 @@ end
 """
     basis_record(name, kept_generators, label)
 
-The per-basis record of one basis (with run times, as written to `<code>_basis_<label>.json`), built from scratch
-from the kept logical generators: the code and its candidate elements are rebuilt here, which needs no group
+The `<code>_basis_<label>.json` record of one basis, rebuilt from the kept logical generators. Needs no group
 orders, so it runs on a worker without Oscar.
 """
 function basis_record(name::AbstractString, kept_generators::AbstractDict, label::AbstractString)

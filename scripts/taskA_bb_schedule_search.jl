@@ -1,7 +1,6 @@
 # Search translation-invariant CNOT orders for BB72 syndrome extraction that keep circuit distance 6.
-# The memory experiment it uses is
-# FTShadows.Circuits.memory_experiment, also behind taskA_bb72_memory_sanity.jl.
-# Run: julia --project=. scripts/taskA_bb_schedule_search.jl [WORKERS]    Output: results/taskA_julia/bb72_schedule_search.json
+# Run: julia --project=. scripts/taskA_bb_schedule_search.jl [WORKERS]
+# Output: results/taskA_julia/bb72_schedule_search.json
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")
@@ -15,7 +14,6 @@ wp = addprocs(isempty(ARGS) ? 4 : parse(Int, ARGS[1]); exeflags = "--project=$(B
 res = FTShadows.OrderedDict("X" => FTShadows.OrderedDict{String,Int}(), "Z" => FTShadows.OrderedDict{String,Int}())
 try
     @everywhere wp using FTShadows
-    # results are kept in job order (the reference stores them in completion order)
     for (kind, perm, d) in pmap(j -> FTShadows.schedule_distance(j...), WorkerPool(wp), jobs; batch_size = 8)
         res[string(kind)][join(perm)] = d
     end

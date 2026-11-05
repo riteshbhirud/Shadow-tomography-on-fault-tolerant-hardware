@@ -1,9 +1,6 @@
-# Deformed-code and circuit distances of every BB72 gauging combination used by the Bell and GHZ
-# settings. Circuit distance at r = 6
-# (r bounds the timelike distance), with the setting's own outcomes and with all 12 logical qubits as
-# observables. Resumable: finished combinations stay in the output JSON.
+# Deformed-code and r = 6 circuit distances of the BB72 gauging combinations in the Bell / GHZ settings, with and without spectators.
 # Run: julia --project=. scripts/taskA_bb72_local_distance.jl [--only 2|3] [--exclude N] [--skip-spectators] [--out PATH]
-# Output: results/taskA_julia/bb72_local_distance.json
+# Output: results/taskA_julia/bb72_local_distance.json (finished combinations are kept, so a rerun resumes)
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")

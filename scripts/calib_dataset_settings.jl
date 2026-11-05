@@ -1,6 +1,4 @@
-# Flip rates of exactly the settings in the v1.0/v1.1 handover datasets, per string and per subset product.
-# Products need their own q because flips
-# within one setting are correlated. Inputs are +1 eigenstates of every string.
+# Flip rates of the settings in the v1.0/v1.1 datasets, per string and per subset product (flips within a setting are correlated).
 # Run: julia --project=. scripts/calib_dataset_settings.jl [--workers 4]
 # Output: results/calibration_julia/dataset_settings_q.csv
 const REPO = dirname(@__DIR__)

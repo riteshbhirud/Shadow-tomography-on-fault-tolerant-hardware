@@ -1,8 +1,9 @@
-# Shot-record files (format v1.1): reading, the loader API, and writers that reproduce the stored files' bytes exactly.
+# Shot-record files: readers, the loader API, and writers. The writers follow Python's JSON and CSV
+# formatting, since the stored datasets were written that way.
 
 using JSON
 
-#### Python-compatible JSON
+#### JSON in Python's format
 
 """
     pyfloat(x)
@@ -59,7 +60,7 @@ function _pyjson_string(io::IO, s::AbstractString)
         elseif c == '\f'
             print(io, "\\f")
         elseif u < 0x20 || u > 0x7f
-            if u > 0xffff  # surrogate pair, as Python writes it
+            if u > 0xffff  # UTF-16 surrogate pair
                 u -= 0x10000
                 print(io, "\\u", string(0xd800 + (u >> 10); base = 16, pad = 4))
                 print(io, "\\u", string(0xdc00 + (u & 0x3ff); base = 16, pad = 4))
@@ -76,8 +77,8 @@ end
 """
     pyjson(x; indent=nothing, separators=nothing)
 
-JSON text of `x` exactly as Python's `json.dumps(x, indent=..., separators=...)` writes it.
-Dictionaries keep their insertion order, which is the order `JSON.parse` reads.
+JSON text of `x` in the format of Python's `json.dumps(x, indent=..., separators=...)`.
+Dictionaries keep their insertion order.
 """
 function pyjson(x; indent::Union{Nothing,Int} = nothing, separators = nothing)
     item, key = separators === nothing ? (indent === nothing ? ", " : ",", ": ") : separators
@@ -153,10 +154,9 @@ end
 """
     CSVTable(header, rows, newline)
 
-A CSV file as stored. Each cell is `missing` (empty), an `Int`, a
-`Float64` or a `String`, decided from its text so that writing it back gives the same bytes.
-`newline` is `"\\r\\n"` for files from Python's `csv` module (`exact.csv`) and `"\\n"` for
-pandas (`expected.csv`).
+A CSV file. Each cell is `missing` (empty), an `Int`, a `Float64` or a `String`, chosen from its
+text so that writing it back gives the same file. `newline` is `"\\r\\n"` for `exact.csv` and
+`"\\n"` for `expected.csv`.
 """
 struct CSVTable
     header::Vector{String}
@@ -174,7 +174,7 @@ function _csv_cell(tok::AbstractString)
     return String(tok)
 end
 
-# Python's csv module and pandas quote a field only if it contains a separator, quote or newline.
+# A field is quoted only if it contains a separator, quote or newline.
 function _csv_split(line::AbstractString)
     fields = String[]
     buf = IOBuffer()
@@ -239,7 +239,7 @@ function write_csv_table(path::AbstractString, t::CSVTable)
     end
 end
 
-#### Loader API (unchanged from handover/julia/load_records.jl)
+#### Loader API
 
 """
     Record
@@ -314,7 +314,7 @@ _letterwise(a, b) = String([_PAULI_CHAR[(_PAULI_BITS[x][1] ⊻ _PAULI_BITS[y][1]
 """
     subset_index(setting) -> Dict(P => indices of the strings whose product is P)
 
-Valid only when every qubit carries one letter type within the setting (true for every v1.1
+Valid only when every qubit carries one letter type within the setting (true for every stored
 setting): then the letter-wise product has sign +1. Errors otherwise, since e.g. XX·ZZ = −YY.
 """
 function subset_index(setting::Vector{String})

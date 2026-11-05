@@ -1,6 +1,4 @@
-# Flip rate q of the 6-edge Xbar_0 / Zbar_0 gauging graphs that passed the spectator screen.
-# Same r, p, noise, decoder and state as the
-# 9-edge defaults in results/taskA/bb72_qr.csv. The screen and the defaults are read from results/taskA.
+# Flip rate q of the 6-edge Xbar_0 / Zbar_0 gauging graphs that passed the spectator screen, next to the 9-edge defaults.
 # Run: julia --project=. scripts/taskA_bb72_small_graph_q.jl [--workers 6] [--shots 30000]
 # Output: results/taskA_julia/bb72_small_graph_q.csv
 const REPO = dirname(@__DIR__)

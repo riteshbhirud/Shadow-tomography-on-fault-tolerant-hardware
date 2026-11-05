@@ -3,8 +3,8 @@
 """
     seed_automorphisms(h)
 
-Bit permutations P (as matrices) with rowspace(H P) = rowspace(H), each with the Q solving Q H = H P, in the
-order of `itertools.permutations`.
+Bit permutations P (as matrices) with rowspace(H P) = rowspace(H), each with the Q solving Q H = H P, in
+lexicographic order of the permutation.
 """
 function seed_automorphisms(h::AbstractMatrix)
     n = size(h, 2)
@@ -47,7 +47,7 @@ end
 """
     lift_candidates(p1, q1, p2, q2)
 
-Candidate X-part maps on the check sector, in the reference order; the first one that preserves the code is used.
+Candidate X-part maps on the check sector, tried in this order; the first one that preserves the code is used.
 """
 function lift_candidates(p1, q1, p2, q2)
     qi1, qi2 = gf2inv(q1), gf2inv(q2)
@@ -82,8 +82,8 @@ transpose_perm(n1::Integer, m1::Integer) =
 """
     lacross(kk=3, nn=7; orders=true, timings=false)
 
-Generators, group orders and shadow statistics of the La-cross code H_{kk,nn} (the `lacross.json` record; the
-run time is added with `timings=true`). Group orders need `using Oscar`; with `orders=false` they are left out.
+Generators, group orders and shadow statistics of the La-cross code H_{kk,nn} (the `lacross.json` record).
+Group orders need `using Oscar`; `orders=false` skips them. `timings=true` adds the run time.
 """
 function lacross(kk::Integer=3, nn::Integer=7; orders::Bool=true, timings::Bool=false)
     t0 = time()
@@ -139,7 +139,7 @@ function lacross(kk::Integer=3, nn::Integer=7; orders::Bool=true, timings::Bool=
         mix = 0.5 .* (lz .+ lx)
         e = OrderedDict{String,Any}()
         if orders
-            km, o = reduce_generators(gs, d)   # GAP is much faster on the few generators that are kept
+            km, o = reduce_generators(gs, d)   # GAP is much faster on the reduced generator set
             e["order"] = o
             e["order_second_seed"] = group_order(km, d)   # an independent recognition run
             e["is_full_Sp"] = o == sp

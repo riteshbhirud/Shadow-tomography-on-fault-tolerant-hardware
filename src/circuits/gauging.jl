@@ -1,4 +1,4 @@
-# Gauging logical measurement (Williamson and Yoder, arXiv:2410.02213) for any stabilizer code
+# Gauging logical measurement (Williamson and Yoder, arXiv:2410.02213) for any stabilizer code.
 # Measuring L on support V adds one |0> edge qubit per edge of a graph
 # on V, Gauss checks A_v = L_v prod_{e at v} X_e, flux checks on a cycle basis, and deforms every
 # original check by Z on edge paths pairing its L-anticommuting vertices.
@@ -57,8 +57,8 @@ function _best_matching(G::PyGraph, S::Vector{Int}, degree_aware::Bool)
     return best[2]
 end
 
-# Cap vertex degrees by rerouting an excess edge (u, x) as the path u-w-x. The candidate
-# w is taken from a Python set, so its iteration order is CPython's.
+# Cap vertex degrees by rerouting an excess edge (u, x) as the path u-w-x. Candidates w are
+# scanned in CPython set order (see pyorder.jl).
 function _reroute_degree!(G::PyGraph, pairings, max_degree::Int)
     pairings = [[collect(Int, p) for p in pr] for pr in pairings]
     changed = true
@@ -115,10 +115,10 @@ function routed_pairings(G::PyGraph, checks, L::PauliDict)
     return pairings
 end
 
-# The Cheeger padding breaks ties with numpy's default_rng(seed).random(), which Julia cannot
-# replay. The edges used by the default graphs are stored (src/circuits/data/python_rng.json) and
-# every imported edge is checked to maximise (Cheeger constant, -degree sum), the deterministic part
-# of the choice. Other targets and seeds draw from numpy through the bridge.
+# The Cheeger padding breaks ties with numpy's default_rng(seed).random(). For the default graphs
+# the chosen edges are stored in data/python_rng.json, and each one is checked to maximise
+# (Cheeger constant, -degree sum), the deterministic part of the choice. Other targets and seeds
+# call numpy directly.
 const PYTHON_RNG = Ref{Any}(nothing)
 function python_rng()
     PYTHON_RNG[] === nothing && (PYTHON_RNG[] = JSON.parsefile(joinpath(@__DIR__, "data", "python_rng.json")))
@@ -153,8 +153,8 @@ end
 """numpy's `default_rng(seed)`, through the bridge."""
 np_rng(seed::Integer) = pymodule(:numpy).random.default_rng(seed)
 
-# The padding loop of gauging.build_graph, drawing its tie-breaks from numpy: one draw per candidate
-# edge, in itertools.combinations order over the sorted support.
+# Cheeger padding with numpy tie-breaks: one draw per candidate edge, pairs in lexicographic order
+# over the sorted support.
 function _cheeger_padding_numpy!(G::PyGraph, V, target, max_extra, seed)
     rng = np_rng(seed)
     added = 0
@@ -228,7 +228,7 @@ end
     cycle_basis_edges(G)
 
 Short GF(2) cycle basis as sorted edge lists, shortest first, from shortest-path and BFS-tree
-cycles (gauging.cycle_basis_edges).
+cycles.
 """
 function cycle_basis_edges(G::PyGraph)
     edges = sorted_edges(G)
@@ -311,8 +311,8 @@ end
 """
     gauss_order_numpy(seed, qubits)
 
-`default_rng(seed).permutation(qubits)`: the Gauss-check gate order of gauging_experiment for seeds
-that are not in the exported table.
+`default_rng(seed).permutation(qubits)`: the Gauss-check gate order for seeds not in the stored
+table.
 """
 gauss_order_numpy(seed::Integer, qubits) = pyconvert(Vector{Int}, np_rng(seed).permutation(pylist(collect(Int, qubits))))
 
@@ -384,8 +384,8 @@ end
     multi_gauging_experiment(n_code, code_checks, Ls, rounds, readout_basis; state=(), logical_basis=nothing,
                              name="multi_gauging", extra_ops=())
 
-Simultaneous gauging of logicals with pairwise-disjoint supports, one default graph each
-(gauging.multi_gauging_experiment). Targets are the logicals, then `extra_ops` deformed through
+Simultaneous gauging of logicals with pairwise-disjoint supports, one default graph each.
+Targets are the logicals, then `extra_ops` deformed through
 every graph.
 """
 function multi_gauging_experiment(n_code::Integer, code_checks, Ls, rounds::Integer, readout_basis::Char;

@@ -1,6 +1,6 @@
 # Sampled BB72 studies: q(r) calibration, local-setting flip rates, gap postselection, the 6-edge
 # graphs' q, memory sanity, the gap-decoder comparison and noiseless checks (scripts taskA_bb72_*).
-# Every chunk uses the reference's seed_for key, so stim draws the reference's shots.
+# Each chunk is seeded with seed_for on a fixed key, so reruns draw the same shots.
 
 const BB72_P = 1e-3
 
@@ -12,7 +12,7 @@ const BB72_QR_CHUNK = 5000
     bb72_qr_chunk(job) -> (err, gap, cost, graph_info)
 
 One chunk `job = (P, r, state, seed, shots, small, chunk_dir)`, cached in `chunk_dir` as
-`{P}_r{r}_{state}_{seed}.npz` (the reference's file), so a restarted run resumes seed-identically.
+`{P}_r{r}_{state}_{seed}.npz`, so a restarted run resumes with the same seeds.
 """
 function bb72_qr_chunk(job)
     Pl, r, state, seed, shots, small, cdir = job
@@ -34,7 +34,7 @@ end
     bb72_qr_adaptive(cfgs, target, max_shots; small=false, chunk_dir, pmap=map, chunk=BB72_QR_CHUNK)
 
 Three chunks per active configuration `(P, r, state)` at a time until it has `target` errors or
-`max_shots` shots (taskA_bb72_calibration.adaptive). Returns the rows of bb72_qr.csv.
+`max_shots` shots. Returns the rows of bb72_qr.csv.
 """
 function bb72_qr_adaptive(cfgs, target, max_shots; small::Bool = false, chunk_dir, pmap = map, chunk = BB72_QR_CHUNK)
     st = [Dict{String,Any}("err" => Vector{UInt8}[], "seed" => 0, "cost" => nothing, "g" => nothing) for _ in cfgs]
@@ -73,8 +73,8 @@ end
 """
     bb72_qr_configs(ps; rounds=1:6, minus_rounds=(2, 3))
 
-Configurations `(P, r, state)` of taskA_bb72_calibration: every r in `rounds` on +1 eigenstates, then
-the r in `minus_rounds` on -1 eigenstates (state independence).
+Configurations `(P, r, state)`: every r in `rounds` on +1 eigenstates, then the r in `minus_rounds` on -1
+eigenstates to check state independence.
 """
 bb72_qr_configs(ps; rounds = 1:6, minus_rounds = (2, 3)) =
     vcat([(string(P), r, "+1") for P in ps for r in rounds], [(string(P), r, "-1") for P in ps for r in minus_rounds])
@@ -164,7 +164,7 @@ end
 
 const SMALL_Q_CHUNK = 2500
 
-"""Pbar_0 gauging on a given graph for r = 3 rounds on the +1 eigenstate (taskA_bb72_small_graph_q.experiment)."""
+"""Pbar_0 gauging on a given graph for r = 3 rounds on the +1 eigenstate."""
 function small_graph_q_experiment(P::Char, edges; rounds::Integer = 3)
     s = bb_setup()
     code, L, basis = s.code, s.L[P], s.bases[P]

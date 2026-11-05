@@ -4,11 +4,8 @@
 """
     StabilizerCode
 
-Stabilizer code with a symplectic logical basis. All rows are (x|z) over GF(2).
-
-- `stabs`: r × 2n stabilizer rows (may be redundant);
-- `lx`, `lz`: k × 2n logical X̄ᵢ and Z̄ᵢ;
-- `meta`: construction data (`:hx`, `:hz`, `:l`, `:m`, `:basis`, ...).
+Stabilizer code with a symplectic logical basis, all rows (x|z) over GF(2). `stabs` holds r × 2n stabilizer
+rows (possibly redundant), `lx` and `lz` the k × 2n logicals X̄ᵢ, Z̄ᵢ, and `meta` the construction data.
 """
 struct StabilizerCode
     name::String
@@ -43,8 +40,8 @@ end
 """
     validate(code; require_css=true)
 
-Check commutation, the rank count r + k = n, and that the logical basis is symplectic and independent mod S.
-The shadow pipeline needs a CSS logical basis, so a non-CSS one is rejected unless `require_css=false`.
+Check commutation, r + k = n, and that the logical basis is symplectic and independent mod S. A non-CSS
+logical basis is rejected unless `require_css=false`, since the shadow maps assume CSS.
 """
 function validate(c::StabilizerCode; require_css::Bool=true)
     n, k = c.n, logical_k(c)
@@ -216,9 +213,8 @@ _qc_terms(monos) = [a == 0 ? (:y, b) : (@assert(b == 0); (:x, a)) for (a, b) in 
 """
     bb_matrices(l, m, amon, bmon) -> (ring, A, B, H_X, H_Z)
 
-Check matrices H_X = [A|B], H_Z = [Bᵀ|Aᵀ] with x = S_l ⊗ I_m. The matrices come from QuantumClifford's
-`BivariateBicycleViaCirculantMat`, which uses the same convention (checked against our own construction in
-the tests).
+Check matrices H_X = [A|B], H_Z = [Bᵀ|Aᵀ] with x = S_l ⊗ I_m, from QuantumClifford's
+`BivariateBicycleViaCirculantMat`.
 """
 function bb_matrices(l, m, amon, bmon)
     c = QuantumClifford.ECC.BivariateBicycleViaCirculantMat(l, m, _qc_terms(amon), _qc_terms(bmon))
@@ -231,8 +227,8 @@ end
 """
     bb_matrices_direct(l, m, amon, bmon)
 
-Same as [`bb_matrices`](@ref) but built directly from shift matrices, S_l[i, i+1] = 1 (used to check the
-QuantumClifford convention).
+[`bb_matrices`](@ref) built directly from shift matrices S_l[i, i+1] = 1. Used in the tests to check the
+QuantumClifford convention.
 """
 function bb_matrices_direct(l, m, amon, bmon)
     shift(n) = GF2Mat([j == mod(i + 1, n) for i in 0:n-1, j in 0:n-1])
@@ -283,9 +279,9 @@ end
 """
     fgh_basis_from(ring, A, B, f, g, h) -> (xl, zl, info) or nothing
 
-The deterministic part of the Bravyi-style block-basis search for given f and (g, h): pick monomial
-shifts greedily so each block has rank k/2, then rotate the Z̄ so that the commutation matrix is I. The random
-search for f, g, h itself used numpy's RNG; its result is loaded from `test/reference/taskb/rng_inputs.json`.
+Bravyi-style block basis for given f and (g, h): pick monomial shifts greedily so each block has rank k/2,
+then rotate the Z̄ so that X̄ Z̄ᵀ = I. The f, g, h come from a seeded random search (numpy RNG) and are read
+from `test/reference/taskb/rng_inputs.json`.
 """
 function fgh_basis_from(ring::BBRing, a, b, f, g, h)
     N = ring_size(ring)
@@ -330,7 +326,7 @@ const TASKB_REFDIR = joinpath(dirname(dirname(@__DIR__)), "test", "reference", "
 """
     rng_inputs()
 
-The stored RNG-derived inputs (exported from the original implementation).
+The stored outputs of the seeded f, g, h search.
 """
 rng_inputs() = JSON.parsefile(joinpath(TASKB_REFDIR, "rng_inputs.json"))
 
@@ -454,7 +450,7 @@ function min_weight_logical_upto(h::AbstractMatrix, other::AbstractMatrix, wmax:
     return best_w, best_s
 end
 
-# 0-based combinations of 0:n-1 of size k in lexicographic order (itertools.combinations)
+# size-k subsets of 0:n-1 in lexicographic order
 function _combinations(n::Integer, k::Integer)
     k == 0 && return [Int[]]
     out = Vector{Int}[]

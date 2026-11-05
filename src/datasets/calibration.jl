@@ -1,5 +1,5 @@
 # Flip rates behind the noise-expected values of the Nov-20 datasets: the surface-code single-patch
-# calibration and its rows of handover/calibration_local.csv. The BB72 rows take CPU-hours and are not regenerated here.
+# calibration and its rows of calibration_local.csv. The BB72 rows take CPU-hours and are not regenerated here.
 
 const SURFACE_CAL_P = 1e-3
 const SURFACE_CAL_CHUNK = 100_000
@@ -25,7 +25,7 @@ end
     surface_calibration(cfgs; pmap=map) -> Dict(config => (errors, shots, cost))
 
 Run chunks two at a time per configuration `(d, bases, r)` until every target has
-`SURFACE_CAL_TARGET` errors or the shot cap for d is reached (the reference's stopping rule).
+`SURFACE_CAL_TARGET` errors or the shot cap for d is reached.
 """
 function surface_calibration(cfgs; pmap = map)
     st = Dict(c => Dict{String,Any}("err" => nothing, "prod" => 0, "shots" => 0, "chunk" => 0, "cost" => nothing) for c in cfgs)
@@ -53,8 +53,8 @@ end
 """
     calibration_local_rows(st) -> Vector{OrderedDict}
 
-handover/calibration_local.csv rows (code surface, kind single_patch) of single-patch results, sorted by
-(d, basis, memory rounds) as surface_local_q.csv.
+calibration_local.csv rows (code surface, kind single_patch) of single-patch results, sorted by
+(d, basis, memory rounds).
 """
 function calibration_local_rows(st)
     rows = OrderedDict{String,Any}[]

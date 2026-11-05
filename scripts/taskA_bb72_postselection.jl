@@ -1,10 +1,6 @@
-# BB72 gap postselection with the plain-anchored Relay gap.
-# Xbar_0, Zbar_0, Ybar_0 gauging at r = 2, 3,
-# p = 1e-3, +1 eigenstates; resumable chunks in results/taskA_julia/bb72_post_chunks/.
-# Chunks are concatenated in chunk order (the reference concatenates them in the order its pool
-# finishes them, which is chunk order with one worker).
+# BB72 gap postselection with the plain-anchored Relay gap: Xbar_0, Zbar_0, Ybar_0 gauging at r = 2, 3, p = 1e-3.
 # Run: julia --project=. scripts/taskA_bb72_postselection.jl [--workers 6] [--shots 30000]
-# Output: results/taskA_julia/bb72_post_{P}_r{r}.npz, results/taskA_julia/bb72_postselection.csv
+# Output: results/taskA_julia/bb72_post_{P}_r{r}.npz and bb72_postselection.csv; resumes from bb72_post_chunks/
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")

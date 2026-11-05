@@ -1,20 +1,7 @@
-# The v1.0/v1.1 datasets: seeded random states, the learnable targets and the regenerated files equal
-# the stored ones. The data files are local, so those items skip when absent.
+# The v1.0/v1.1 datasets: specs, learnable targets and regenerated files against the stored ones.
+# The data files are local, so those items skip when absent.
 
-@testitem "seeded random stabilizer and CSS states match the reference" tags = [:handover, :bridge, :pyref] begin
-    using PythonCall
-    using FTShadows.Circuits: random_stabilizer_state, random_css_state
-    lg = pyimport("ftoracle.logical")
-    conv(x) = [(pyconvert(String, t[0]), pyconvert(Int, t[1])) for t in x]
-    for k in 1:4, s in 0:5
-        @test random_stabilizer_state(k, s) == conv(lg.random_stabilizer_state(k, s))
-    end
-    for m in (4, 11), s in 0:3
-        @test random_css_state(m, s) == conv(lg.random_css_state(m, s))
-    end
-end
-
-@testitem "v1 dataset specs and exact tables equal the handover files" tags = [:handover] begin
+@testitem "v1 dataset specs, learnable targets and stored meta files" tags = [:handover] begin
     using JSON
     using FTShadows: v1_datasets, learnable, product_strings, py_round
     dir = joinpath(pkgdir(FTShadows), "handover", "data")
@@ -34,7 +21,7 @@ end
     end
 end
 
-@testitem "v1 datasets regenerate byte for byte" tags = [:handover, :slow] begin
+@testitem "v1 dataset regeneration" tags = [:handover, :slow] begin
     using JSON
     using FTShadows: v1_datasets, generate_v1, pyjson
     dir = joinpath(pkgdir(FTShadows), "handover", "data")

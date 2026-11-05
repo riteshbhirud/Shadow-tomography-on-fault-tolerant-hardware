@@ -1,8 +1,8 @@
-# Two pieces of CPython behaviour that decide emitted circuits:
-#  - `group_checks` shuffles with `random.Random(0)` (MT19937, CPython's init_by_array seeding
-#    and `_randbelow` rejection sampling);
-#  - `_reroute_degree!` iterates a `set` of qubit ids, whose order is CPython's hash-table order.
-# Both are deterministic and replayed exactly here (checked against CPython through the bridge in the tests).
+# Two pieces of CPython behaviour decide the emitted circuits, so they are replayed here to keep the
+# circuits of the stored datasets:
+#  - `group_checks` shuffles with `random.Random(0)` (MT19937 with CPython's seeding and `_randbelow`);
+#  - `_reroute_degree!` iterates a `set` of qubit ids, in CPython's hash-table order.
+# The tests check both against CPython.
 
 mutable struct PyRandom
     mt::Vector{UInt32}

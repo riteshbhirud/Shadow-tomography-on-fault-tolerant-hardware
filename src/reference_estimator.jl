@@ -32,7 +32,7 @@ end
     decompose(P, S) -> (subset, sign) or nothing
 
 0-based `subset` of the labels `S` and `sign` with P = sign * prod of S over the subset, found by brute
-force over the subsets in increasing bit-mask order (as the reference, so the same subset is returned).
+force over the subsets in increasing bit-mask order.
 """
 function decompose(P::AbstractString, S::AbstractVector)
     m = length(S)
@@ -62,7 +62,7 @@ its order) and `{setting => measured Pauli labels}`.
 function lambdas(targets, ensemble::AbstractDict, setting_labels::AbstractDict)
     lam = OrderedDict{String,Any}()
     for P in targets
-        # Python's sum starts from the integer 0, so a target nothing measures gets 0, not 0.0
+        # integer init: a target no setting measures gets 0, not 0.0 (same as Python's sum)
         lam[P] = foldl(+, (pr for (s, pr) in ensemble if decompose(P, setting_labels[s]) !== nothing); init = 0)
     end
     return lam

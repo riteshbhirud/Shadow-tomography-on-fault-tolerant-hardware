@@ -1,7 +1,7 @@
-# Fast parity checks against the small tracked fixtures in test/reference/taskb (exported from the original
-# implementation). They do not need results/taskB or Oscar.
+# Fast checks against the small tracked fixtures in test/reference/taskb. They need neither results/taskB
+# nor Oscar.
 
-@testitem "TaskB fixtures: GF(2) routines equal the reference" setup = [TaskBRef] begin
+@testitem "TaskB fixtures: GF(2) routines match stored results" setup = [TaskBRef] begin
     import FTShadows.TaskB as TB
     ref = TaskBRef.small_refs()
     for g in ref["gf2"]
@@ -17,7 +17,7 @@
     end
 end
 
-@testitem "TaskB fixtures: logical bases equal the reference" setup = [TaskBRef] begin
+@testitem "TaskB fixtures: logical bases match the stored ones" setup = [TaskBRef] begin
     import FTShadows.TaskB as TB
     ref = TaskBRef.small_refs()["bases"]
     for key in ("BB72/fgh", "BB72/generic", "gross/fgh", "gross/generic")
@@ -52,7 +52,7 @@ end
     end
 end
 
-@testitem "TaskB fixtures: toy shadow channels equal the reference" setup = [TaskBRef] begin
+@testitem "TaskB fixtures: toy shadow channels match stored values" setup = [TaskBRef] begin
     import FTShadows.TaskB as TB
     for (name, d) in TaskBRef.small_refs()["toy_lambda"]
         gens = [TB.frombits(g) for g in d["generators"]]

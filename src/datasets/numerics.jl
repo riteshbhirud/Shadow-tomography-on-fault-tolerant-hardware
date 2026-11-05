@@ -1,5 +1,5 @@
-# The numpy and Python numerics behind the handover files' expected values, reproduced bit for bit
-# (checked against numpy through the bridge in the tests).
+# numpy and Python float conventions (pairwise sums, the two rounding rules) used for the datasets' expected
+# values, so recomputed values agree with the stored tables to the last bit.
 
 """Sum in numpy's pairwise order (`np.add.reduce` on float64)."""
 function np_sum(a::AbstractVector{Float64})
@@ -34,7 +34,7 @@ end
 """`np.mean` of a list of floats."""
 np_mean(a) = np_sum(Float64.(collect(a))) / length(a)
 
-"""`np.std(a, ddof=ddof)`: numpy's two-pass variance (pairwise sums), then the square root."""
+"""`np.std(a, ddof=ddof)`: two-pass variance with pairwise sums, then the square root."""
 function np_std(a::AbstractVector{Float64}; ddof::Integer = 0)
     m = np_sum(a) / length(a)
     x = a .- m

@@ -1,6 +1,6 @@
 # [Reproducing results](@id reproducing)
 
-Every reported number comes from a Julia script in `scripts/`, one script per result. Each script starts with a `# Run:` line giving its command line and options. Run the scripts from the repository root. The ones that call Python set `JULIA_PYTHONCALL_EXE` and `JULIA_CONDAPKG_BACKEND` to the project venv unless these are set already.
+Each result comes from a script in `scripts/`; the header of each script gives its command line. Run them from the repository root.
 
 ## `run_all.sh`
 
@@ -35,18 +35,18 @@ julia --project=scripts/plots -e 'using Pkg; Pkg.instantiate()'
 
 ## Where the output goes
 
-Neither results nor datasets are part of the repository. A study whose stored results are in `results/<name>/` writes to `results/<name>_julia/`, for example `results/taskA_julia/`, `results/calibration_julia/` and `results/taskB_julia/`. The dataset scripts write to a `data_julia/` folder next to the stored datasets, and refuse to write over the stored datasets even when that folder is passed with `--out`. A script run therefore never overwrites a stored result.
+Results and datasets are not in the repository. Scripts write to `results/<name>_julia/` (e.g. `results/taskA_julia/`), and the dataset scripts to a `data_julia/` folder next to the stored datasets. They never overwrite stored results.
 
 !!! warning "Quick runs"
     Scripts run with `--quick` write to the same file names as full runs. Move quick outputs away before running a script that reads them.
 
 ## Inputs of later steps
 
-Some scripts read the output of an earlier one. They find it with `FTShadows.upstream(repo, parts...)`: if the `_julia` twin of the file exists, they read the twin, and otherwise the stored file. Only single files are swapped, not folders, because a `_julia` folder can hold part of a dataset. This is what lets `run_all.sh` run from a fresh clone: each step reads the output of the earlier step when there is one.
+Some scripts read the output of an earlier one through `FTShadows.upstream(repo, parts...)`, which returns the file in the `_julia` folder if it exists and the stored file otherwise.
 
 ## Determinism
 
-Everything is seeded (see [Seeds](@ref conventions)). Running a script again gives byte-identical files; only provenance fields such as the date, the run time and the code version change.
+Everything is seeded (see [Seeds](@ref conventions)), so rerunning a script gives the same files up to the date and run-time fields.
 
 !!! note
     Some BB72 scripts decode on several worker processes and keep one Relay-BP decoder per worker between chunks. Per-chunk failure counts then depend on which worker got which chunk. Runs with one worker are exact.

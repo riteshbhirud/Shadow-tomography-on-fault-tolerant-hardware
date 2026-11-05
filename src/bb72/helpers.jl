@@ -1,7 +1,7 @@
-# Small pieces the BB72 study scripts share: itertools orders, numpy file I/O and statistics that
-# have to match numpy/scipy bit for bit, and a pandas-style CSV writer.
+# Helpers shared by the BB72 study scripts. They follow itertools, numpy, scipy and pandas conventions
+# (enumeration order, float rounding, file formats) so new runs reproduce the stored data exactly.
 
-"""Size-k combinations of `v` in itertools.combinations order."""
+"""Size-k combinations of `v` in lexicographic order of positions."""
 function py_combinations(v::AbstractVector, k::Integer)
     n = length(v)
     out = Vector{Vector{eltype(v)}}()
@@ -21,7 +21,7 @@ function py_combinations(v::AbstractVector, k::Integer)
     end
 end
 
-"""All orderings of 0..n-1 in itertools.permutations order (lexicographic)."""
+"""All permutations of 0..n-1 in lexicographic order."""
 function py_permutations(n::Integer)
     out = Vector{Vector{Int}}()
     p = collect(0:n-1)
@@ -41,13 +41,13 @@ function py_permutations(n::Integer)
     end
 end
 
-"""`np.argsort(x, kind="stable")`, 1-based. Compares with `<`, so -0.0 and 0.0 tie as in numpy."""
+"""Stable argsort, 1-based. Compares with `<`, so -0.0 and 0.0 tie."""
 argsort_stable(x) = sortperm(x; lt = <, alg = MergeSort)
 
-"""Python's float ** float (the C library's pow)."""
+"""x^y through the C library's pow, which is what Python's float `**` uses."""
 cpow(x::Float64, y::Float64) = @ccall pow(x::Float64, y::Float64)::Float64
 
-"""`scipy.stats.rankdata(x)`: ranks 1..n, ties get their average rank."""
+"""Ranks 1..n, ties get their average rank (as `scipy.stats.rankdata`)."""
 function rankdata(x::AbstractVector)
     n = length(x)
     p = argsort_stable(x)
@@ -79,16 +79,16 @@ function auc(score::AbstractVector, err::AbstractVector{Bool})
     return (np_sum(r[err]) - n1 * (n1 + 1) / 2) / (n1 * n0)
 end
 
-"""`np.corrcoef(a, b)[0, 1]` computed by numpy through the bridge (its BLAS dot products decide the last bits)."""
+"""Pearson correlation of `a` and `b`, computed by numpy (`np.corrcoef`)."""
 function np_corrcoef(a::AbstractVector, b::AbstractVector)
     np = pymodule(:numpy)
     return pyconvert(Float64, np.corrcoef(to_numpy(Int.(a)), to_numpy(Int.(b)))[0, 1])
 end
 
-"""Mean of 0/1 values as numpy computes it (the sum is exact, then one division)."""
+"""Mean of 0/1 values: exact count, then one division."""
 bitmean(x) = count(!iszero, x) / length(x)
 
-#### numpy files, written and read by numpy through the bridge so the formats are the reference's
+#### numpy files, written and read by numpy through PythonCall
 
 """A C-ordered numpy copy of a Julia array."""
 to_numpy(A::AbstractArray) = (np = pymodule(:numpy); np.ascontiguousarray(np.asarray(A)))
@@ -102,8 +102,7 @@ npy_load_u8(path::AbstractString) = pyconvert(Matrix{UInt8}, pymodule(:numpy).lo
 """
     npz_save_compressed(path; arrays...)
 
-`np.savez_compressed(path, ...)`. Julia arrays become numpy arrays; dicts become 0-d object arrays,
-as `np.array(d, dtype=object)`.
+`np.savez_compressed(path, ...)`. Julia arrays become numpy arrays, dicts become 0-d object arrays.
 """
 function npz_save_compressed(path::AbstractString; arrays...)
     np = pymodule(:numpy)
@@ -113,7 +112,7 @@ function npz_save_compressed(path::AbstractString; arrays...)
     return nothing
 end
 
-# Python values of a stored dict back to Julia, keeping key order.
+# Python values of a stored dict back to Julia, keeping key order
 _jl(x::Py) = pyisinstance(x, pybuiltins.dict) ?
              OrderedDict{String,Any}(pyconvert(String, k) => _jl(v) for (k, v) in x.items()) :
              pyis(x, pybuiltins.None) ? nothing : pyisinstance(x, pybuiltins.bool) ? pyconvert(Bool, x) :
@@ -151,7 +150,7 @@ function atomic_save(save, path::AbstractString, tmp::AbstractString)
     return path
 end
 
-#### pandas DataFrame(rows).to_csv(index=False)
+#### CSV in pandas `DataFrame(rows).to_csv(index=False)` format
 
 _frame_cell(x::Bool) = x ? "True" : "False"
 _frame_cell(x::AbstractFloat) = isnan(x) ? missing : Float64(x)
@@ -162,8 +161,8 @@ _frame_cell(x) = x
 """
     write_frame_csv(path, rows)
 
-Write a vector of ordered dicts as `pd.DataFrame(rows).to_csv(path, index=False)`: columns in order of
-first appearance, NaN and None empty, booleans as True/False, floats as Python's repr.
+Write a vector of ordered dicts as CSV: columns in order of first appearance, NaN and `nothing` empty,
+booleans as True/False, floats as Python's repr.
 """
 function write_frame_csv(path::AbstractString, rows)
     cols = String[]
@@ -181,7 +180,7 @@ jsonable(x::AbstractVector) = Any[jsonable(y) for y in x]
 jsonable(x::AbstractDict) = OrderedDict{String,Any}(string(k) => jsonable(v) for (k, v) in x)
 jsonable(x) = x
 
-"""Write `x` like `json.dump(x, f, indent=1)`."""
+"""Write `x` as JSON with indent 1."""
 write_json(path::AbstractString, x; indent = 1) = write(path, pyjson(jsonable(x); indent))
 
 """Read a JSON file keeping key order (`JSON.Object`), or an empty ordered dict if it does not exist."""

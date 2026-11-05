@@ -3,9 +3,9 @@ The circuit side of the measurement oracle: codes, logical bases, surgery and ga
 constructions, the epoch circuit builder with its stabilizer tracker, and the native-operation
 catalog. Circuits are a small IR emitted as stim text.
 
-Qubit ids are 0-based, as in the stim text. Python's iteration
-orders (insertion-ordered dicts, networkx adjacency, small-int sets, `random.Random(0)`) decide
-which detectors and gate orders get emitted, so they are reproduced exactly.
+Qubit ids are 0-based, as in the stim text. Detector and gate order follow Python's iteration
+orders (insertion-ordered dicts, networkx adjacency, small-int sets, `random.Random(0)`), since the
+stored datasets were generated with that ordering.
 """
 module Circuits
 

@@ -1,6 +1,4 @@
-# Reproduce Gidney's Y / X / Z memory numbers (arXiv:2302.07395) with his circuits and our decoder.
-# His correlated matcher is not public,
-# so the X / Z runs measure the decoder factor that the Y ratio is compared to.
+# Gidney's Y / X / Z memory numbers (arXiv:2302.07395) with his circuits and plain matching; X / Z give the decoder factor for Y.
 # Run: julia --project=. scripts/surface_y_gidney_reproduction.jl [--workers 8]
 # Output: results/taskA_julia/surface_y_gidney_reproduction.json
 const REPO = dirname(@__DIR__)

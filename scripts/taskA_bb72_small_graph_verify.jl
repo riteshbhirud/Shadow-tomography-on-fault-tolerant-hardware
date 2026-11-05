@@ -1,8 +1,6 @@
-# Full check of the 6-edge Xbar_0 / Zbar_0 gauging graphs proposed as defaults:
-# deformed-code distance, circuit distance
-# with spectators, Cheeger constant and weights, noiseless exactness. The graphs are the first
-# distance-6 rows of results/taskA/bb72_small_graph_search_spectators.json. Resumable.
-# Run: julia --project=. scripts/taskA_bb72_small_graph_verify.jl    Output: results/taskA_julia/bb72_small_graph_verify.json
+# Full check of the proposed 6-edge Xbar_0 / Zbar_0 gauging graphs: distances, Cheeger constant, weights, noiseless exactness.
+# Run: julia --project=. scripts/taskA_bb72_small_graph_verify.jl
+# Output: results/taskA_julia/bb72_small_graph_verify.json (resumable)
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")
@@ -13,6 +11,7 @@ input_file(f) = FTShadows.upstream(REPO, "results", "taskA", f)
 const OUT = joinpath(REPO, "results", "taskA_julia")
 const R = 6
 
+# the first distance-6 graph per logical in the spectator screen
 function chosen()
     d = JSON.parsefile(input_file("bb72_small_graph_search_spectators.json"))
     out = OrderedDict{Char,Vector{Tuple{Int,Int}}}()

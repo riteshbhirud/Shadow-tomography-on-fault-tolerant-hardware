@@ -1,5 +1,4 @@
-# Cost of preparing a logical state vs measuring it with our local Pauli settings.
-# Unit: physical qubit x round.
+# Cost of preparing a logical state vs measuring it with our local Pauli settings, in physical qubit x rounds.
 # Run: julia --project=. scripts/b2_prep_vs_measure.jl [OUT]   (default results/b2_julia/prep_vs_measure.csv)
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))

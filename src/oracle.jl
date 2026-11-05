@@ -1,5 +1,5 @@
-# Measurement oracle: `run_oracle` samples and decodes one measurement setting on one input state
-# Sampling is stim's, so the same circuit and seed give the same shots as the reference.
+# Measurement oracle: `run_oracle` samples and decodes one measurement setting on one input state.
+# Sampling is done by stim, so a circuit and seed fix the shots.
 
 using JSON
 
@@ -52,8 +52,7 @@ end
 """
     load_prebuilt(path) -> PrebuiltExperiment
 
-Read an exported reference experiment (keys `sample` and, for
-p > 0, `eigen`).
+Read an experiment saved as JSON with finished builds (keys `sample` and, for p > 0, `eigen`).
 """
 function load_prebuilt(path::AbstractString)
     d = JSON.parsefile(path)

@@ -1,4 +1,4 @@
-# `pd.DataFrame(rows).to_csv(path, index=False)` for a list of row dicts, byte for byte.
+# CSV in the format of pandas `DataFrame(rows).to_csv(path, index=False)`, which the dataset tables use.
 # pandas picks one dtype per column, and that decides how a cell is printed: an integer column
 # that also holds None or NaN becomes float ("3.0"), NaN and None print empty, inf prints "inf".
 
@@ -29,9 +29,8 @@ end
 """
     pandas_csv(path, rows)
 
-Write `rows` (dicts from column name to value; `nothing` is Python's None) as
-`pd.DataFrame(rows).to_csv(path, index=False)`. Columns appear in first-seen order; a key missing from a
-row is NaN there.
+Write `rows` (dicts from column name to value, `nothing` for None) in pandas CSV format. Columns appear in
+first-seen order and a key missing from a row is NaN there.
 """
 function pandas_csv(path::AbstractString, rows)
     cols = String[]

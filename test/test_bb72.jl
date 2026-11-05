@@ -1,5 +1,4 @@
-# The library parts behind the BB72 study scripts against reference values
-# (test/reference/bb72/bb72.json, exported from the original implementation).
+# Library pieces behind the BB72 study scripts, against the stored values in test/reference/bb72/bb72.json.
 
 @testmodule BB72Ref begin
     using JSON, FTShadows
@@ -13,7 +12,7 @@ end
     for c in BB72Ref.REF["random_stabilizer_state"]
         @test random_stabilizer_state(c["k"], c["seed"]) == [(String(l), Int(s)) for (l, s) in c["gens"]]
     end
-    # the exported Gauss permutations are numpy's
+    # the stored Gauss permutations are numpy draws
     for (key, perm) in python_rng()["gauss_perms"]
         seed, len = parse.(Int, split(key, ':'))
         @test gauss_order_numpy(seed, 0:len-1) == perm
@@ -58,7 +57,7 @@ end
         @test length(c) == ref["n"]
         @test [[collect(e) for e in c[1][2]], c[1][3]] == ref["first"]
         @test [[collect(e) for e in c[end][2]], c[end][3]] == ref["last"]
-        @test Float64(sum(Rational{BigInt}(x[3]) for x in c)) == ref["cheeger_sum"]  # Python 3.12 sums floats exactly
+        @test Float64(sum(Rational{BigInt}(x[3]) for x in c)) == ref["cheeger_sum"]  # the stored sum is exact
     end
     @test collect(F.local_distance_combos([2, 3])) == [String(k) => String(v) for (k, v) in BB72Ref.REF["local_distance_combos"]]
     a = BB72Ref.REF["auc"]

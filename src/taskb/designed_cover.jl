@@ -1,13 +1,14 @@
 # Greedy cover of target logical Paulis by native settings.
 #
-# A native setting (g ∈ G, readout Z or X) measures every P with g(P) Z-type (X-type). The settings were drawn
-# from a seeded numpy generator; those draws are replayed from test/reference/taskb/designed_cover_draws.json.
+# A native setting (g ∈ G, readout Z or X) measures every P with g(P) Z-type (X-type). The random settings
+# were first drawn with a seeded numpy generator, so the draws are replayed from
+# test/reference/taskb/designed_cover_draws.json to keep the published cover sizes reproducible.
 
 """
     CoverDraws
 
-The numpy draws of one `designed_cover.run` call, consumed in order: local-Pauli settings (12 trits each) and
-product-replacement steps (pair i ≠ j of pool slots and a coin).
+Recorded draws of one designed-cover run, consumed in order: local-Pauli settings (12 trits each) and
+product-replacement steps (pool slots i ≠ j and a coin).
 """
 mutable struct CoverDraws
     trits::Vector{UInt8}
@@ -81,7 +82,7 @@ end
 """
     greedy_cover(sets, n_targets) -> (chosen, n_covered)
 
-Greedy set cover (ties go to the first set, as `np.argmax`). Sets hold 1-based target indices.
+Greedy set cover, ties to the first set. Sets hold 1-based target indices.
 """
 function greedy_cover(sets, n_targets::Integer)
     covered = falses(n_targets)
@@ -122,8 +123,8 @@ end
     designed_cover(name, generators, lambda_mix, draws; k=12, wmax=2, pool=6000, seed=7)
 
 The `designed_cover_<code>.json` record: greedy native and local-Pauli covers of the learnable Paulis of weight
-≤ `wmax` for every ensemble. `generators` are the kept generators (in the saved order), `lambda_mix` the
-`Float32` λ_mix tables; `seed` is only recorded (the draws come from `draws`).
+≤ `wmax` for every ensemble. `generators` are the kept generators, `lambda_mix` the `Float32` λ_mix tables.
+`seed` is only written to the record; the randomness comes from `draws`.
 """
 function designed_cover(name, generators::AbstractDict, lambda_mix::AbstractDict, r::CoverDraws;
                         k::Integer=12, wmax::Integer=2, pool::Integer=6000, seed::Integer=7)

@@ -34,7 +34,7 @@ end
     end
 end
 
-@testitem "setting-cost table equals the reference" tags = [:handover, :slow] setup = [HandoverRef] begin
+@testitem "setting-cost table matches results/taskA" tags = [:handover, :slow] setup = [HandoverRef] begin
     using FTShadows: local_setting_costs, write_setting_costs
     R = HandoverRef.RESULTS
     if HandoverRef.have(joinpath(R, "local_setting_costs.csv"), joinpath(R, "bb72_local_q.csv"))

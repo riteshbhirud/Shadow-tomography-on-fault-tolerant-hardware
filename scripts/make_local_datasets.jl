@@ -1,6 +1,6 @@
 # Generate the Nov-20 Bell / GHZ datasets.
-# Output goes to handover/data_julia/nov20/ by default, never to handover/data/.
 # Run: julia --project=. scripts/make_local_datasets.jl [--only SUBSTR[,SUBSTR..]] [--workers 6] [--out DIR]
+# Output: handover/data_julia/nov20/ by default, never handover/data/.
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")

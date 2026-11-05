@@ -10,15 +10,15 @@
 
 `src/taskb` is a separate part: it works out which logical Clifford groups BB72, the gross code and La-cross codes implement cheaply, and the shadow norms of those ensembles.
 
-The package started as Python code; this is the Julia version, built on [QuantumClifford.jl](https://github.com/QuantumSavory/QuantumClifford.jl).
+It is built on [QuantumClifford.jl](https://github.com/QuantumSavory/QuantumClifford.jl).
 
 ## Install
 
-You need Julia 1.12, and Python 3.12 for the tools the package calls through pycall.  
+You need Julia 1.12, and Python 3.12 for the tools the package calls through PythonCall.
 
 ```bash
 uv venv --python 3.12
-uv pip install -r python/requirements.txt      # exact versions behind every reported number
+uv pip install -r python/requirements.txt
 export JULIA_PYTHONCALL_EXE=$PWD/.venv/bin/python
 export JULIA_CONDAPKG_BACKEND=Null
 julia --project=. -e 'using Pkg; Pkg.instantiate()'

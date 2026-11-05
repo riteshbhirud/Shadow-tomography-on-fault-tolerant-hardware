@@ -1,5 +1,5 @@
 {
- "note": "Results of seeded numpy searches from the original implementation, stored because Julia cannot replay them.",
+ "note": "Results of seeded numpy searches, stored here instead of being rerun.",
  "bb72_min_weight_logicals": {
   "X": {
    "weight": 6,

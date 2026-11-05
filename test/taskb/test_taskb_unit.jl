@@ -361,33 +361,3 @@ end
     @test_throws r"not CSS" TB.validate(c2)
     @test TB.validate(c2; require_css=false) === nothing
 end
-
-@testitem "TaskB: brute-force samples equal the reference bit for bit" tags = [:slow, :bridge, :pyref] setup = [TaskBToys] begin
-    using PythonCall
-    import FTShadows.TaskB as TB
-    # the reference setting: seed 2026, 30000 shots, the phase-type toy group, readouts Z, X and mix
-    bf, sh, st, np = pyimport("taskb.bruteforce"), pyimport("taskb.shadow"), pyimport("stim"), pyimport("numpy")
-    pycirc(c) = st.Circuit(c * "\nI 0 1 2")
-    pyc = [pycirc(c) for c in ["H 0 1 2", "SWAP 0 1\nSWAP 1 2", "CZ 0 1\nS 2"]]
-    pygroup = bf.enumerate_group(pyc, 3)
-    pylam = sh.channel_for_group(pylist([bf.tableau_symplectic(st.Tableau.from_circuit(c)) for c in pyc]), 3)
-    k = 3
-    circs = TaskBToys.TOY_GENS["phase_type"]
-    group, words = TB.enumerate_group(circs, k)
-    lz, lx, _, _ = TB.channel_for_group(TaskBToys.toy_symplectic("phase_type"), k)
-    @test lz == pyconvert(Vector{Float64}, pylam[0]) && lx == pyconvert(Vector{Float64}, pylam[1])
-    for readout in ("Z", "X", "mix")
-        lam = Dict("Z" => lz, "X" => lx, "mix" => 0.5 .* (lz .+ lx))[readout]
-        paulis = [1, 9, 63, 3, 24]
-        rng, prng = TB.numpy_rng(2026), np.random.default_rng(2026)
-        psi = TB.haar_state(k, rng)
-        ppsi = bf.haar_state(k, prng)
-        @test psi == pyconvert(Vector{ComplexF64}, ppsi)
-        shots = 30000
-        est = TB.simulate_estimator(group, words, circs, psi, paulis, lam, k, shots, rng; readout)
-        pest = bf.simulate_estimator(pygroup, ppsi, pylist(paulis), np.asarray(lam), k, shots, prng; readout)
-        @test est == pyconvert(Matrix{Float64}, pest)
-        # both generators are left in the same state
-        @test pyconvert(Float64, rng.random()) == pyconvert(Float64, prng.random())
-    end
-end

@@ -1,6 +1,6 @@
 # Task A plots: surface q(r), BB72 q(r) and BB72 postselection curves.
 # Run: julia --project=scripts/plots scripts/plots/plot_taskA.jl [--in DIR] [--out DIR] [--dump FILE]
-# Reads results/taskA/*.csv and *.npz; writes the PNGs to results/taskA_julia/, not next to the data.
+# Reads results/taskA/ and writes the PNGs to results/taskA_julia/.
 import CSV, NPZ
 include(joinpath(@__DIR__, "common.jl"))
 

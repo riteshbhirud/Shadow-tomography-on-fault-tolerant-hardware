@@ -1,7 +1,7 @@
 # Code distance and circuit distance. The circuit distance comes from stim's
 # undetectable-logical-error search through the bridge; there is no Julia equivalent.
-# The randomized ISD upper bound draws its column permutations from numpy through the bridge,
-# so a given seed finds the same vectors; the tests also check code distances with an exact MIP.
+# The randomized ISD upper bound draws its column permutations from numpy's `default_rng`, so a
+# seed always finds the same vectors. The tests also check code distances with an exact MIP.
 
 """
     code_capacity_circuit(n, checks, observables; p=0.01)
@@ -92,7 +92,7 @@ end
     code_distance_isd(n, checks; iters=300, seed=0)
 
 `(weight, Pauli dict)` of the lightest nontrivial logical found by [`min_weight_codeword`](@ref) over
-the normalizer of `checks`: an upper bound on the code distance (distance.code_distance_isd).
+the normalizer of `checks`: an upper bound on the code distance.
 """
 function code_distance_isd(n::Integer, checks; iters::Integer=300, seed::Integer=0)
     S = Matrix{Bool}(permutedims(reduce(hcat, [dict_to_vec(c, n) for c in checks])))

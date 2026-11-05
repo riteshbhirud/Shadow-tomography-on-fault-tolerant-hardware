@@ -1,14 +1,14 @@
-# Writing the Task B result files in their stored formats (scripts/taskb_run_all.jl): JSON as
-# Python's json.dump, CSV as csv.DictWriter, the λ tables as .npy, the kept generators as .npz (numpy, bridged).
+# Writers for the Task B result files (scripts/taskb_run_all.jl). JSON and CSV use Python's json/csv formatting
+# and the arrays are .npy/.npz, so new runs diff cleanly against the stored results.
 
 """
     write_pyjson(path, x; indent=nothing)
 
-Write `x` as Python's `json.dump(x, fh, indent=indent)` does (no trailing newline).
+Write `x` as JSON in `json.dump` format, no trailing newline.
 """
 write_pyjson(path::AbstractString, x; indent=nothing) = write(path, pyjson(x; indent))
 
-# a cell as Python's csv module writes str(value)
+# one CSV cell, formatted like Python's str(value)
 function _dictcsv_cell(v)
     v === nothing && return ""
     v isa Bool && return v ? "True" : "False"
@@ -25,8 +25,7 @@ end
 """
     write_dictcsv(path, rows)
 
-Write dict rows as `csv.DictWriter(fh, fieldnames=<keys of all rows, in first-seen order>)` with `writeheader()`
-and `writerows(rows)`: CRLF line ends, missing keys empty.
+Write dict rows as CSV with a header of all keys in first-seen order. CRLF line ends, missing keys empty.
 """
 function write_dictcsv(path::AbstractString, rows)
     cols = String[]
@@ -44,7 +43,7 @@ end
 """
     write_npy(path, v::Vector{Float32})
 
-A 1-D little-endian float32 array in numpy's .npy format, version 1.0 (header padded to 64 bytes), as `np.save`.
+A 1-D little-endian float32 array in .npy format, version 1.0.
 """
 function write_npy(path::AbstractString, v::AbstractVector{Float32})
     header = "{'descr': '<f4', 'fortran_order': False, 'shape': ($(length(v)),), }"
@@ -59,8 +58,8 @@ end
 """
     write_generators_npz(path, kept)
 
-The kept generators of every ensemble as `np.savez_compressed` arrays of shape (count, 2k, 2k), uint8, in
-[`ENSEMBLES`](@ref) order (numpy through the bridge; the zip timestamps differ from run to run anyway).
+The kept generators of every ensemble as compressed .npz arrays of shape (count, 2k, 2k), uint8, in
+[`ENSEMBLES`](@ref) order.
 """
 function write_generators_npz(path::AbstractString, kept::AbstractDict, k::Integer)
     np = pymodule(:numpy)
@@ -74,7 +73,7 @@ function write_generators_npz(path::AbstractString, kept::AbstractDict, k::Integ
     np.savez_compressed(path; arrs...)
 end
 
-"""A gate list in the JSON layout of the stored files: [name, qubits...] (a SWAPPERM carries its list)."""
+"""A gate list in the JSON layout [name, qubits...]; a SWAPPERM carries its permutation as one list."""
 gate_lists(gates) = [g.name == :SWAPPERM ? Any["SWAPPERM", g.qubits] : Any[string(g.name); g.qubits] for g in gates]
 
 _int_rows(m) = [Int.(m[i, :]) for i in axes(m, 1)]
@@ -110,8 +109,8 @@ end
 """
     crosscheck_report(name, code, sample; trials=3, rng=MersenneTwister(20261030)) -> (text, all_ok)
 
-The state-level sign check of the sampled elements ([`signed_crosscheck`](@ref)), one line per element in the
-format of the old `julia/taskb_crosscheck.jl` log.
+The state-level sign check of the sampled elements ([`signed_crosscheck`](@ref)): one line per element and an
+`ALL_OK` summary line.
 """
 function crosscheck_report(name, code::StabilizerCode, sample; trials::Integer=3, rng=nothing)
     rng = rng === nothing ? MersenneTwister(20261030) : rng

@@ -24,8 +24,7 @@ gf2mul(a::AbstractVecOrMat, b::AbstractVecOrMat) = GF2Mat(isodd.(Int.(a) * Int.(
 """
     rref(m) -> (r, pivots)
 
-Reduced row echelon form over GF(2) and the (1-based) pivot columns. Same elimination order as the
-reference, so pivots and the reduced matrix agree entry for entry.
+Reduced row echelon form over GF(2) and the (1-based) pivot columns.
 """
 function rref(m::AbstractMatrix)
     r = gf2(m)
@@ -101,7 +100,7 @@ in_rowspace(rows::AbstractMatrix, v::AbstractVector) = gf2rank(vcat(gf2(rows), g
     solve_left(a, b)
 
 A solution `x` of `x a = b` over GF(2) (`b` a vector or a matrix of row vectors), or `nothing`. Free variables
-are set to zero, as in the reference, so the particular solution is the same.
+are set to zero.
 """
 function solve_left(a::AbstractMatrix, b::AbstractVecOrMat)
     single = b isa AbstractVector
@@ -160,7 +159,7 @@ end
 """
     bitrows(m)
 
-Rows of a 0/1 matrix as strings of '0'/'1' (the format of the exported reference files).
+Rows of a 0/1 matrix as strings of '0'/'1', the format used in the JSON files.
 """
 bitrows(m::AbstractMatrix) = [join(Int.(m[i, :])) for i in 1:size(m, 1)]
 

@@ -1,7 +1,7 @@
-# The B2 cost comparison and the B3 La-cross scan reproduce the stored results in results/b2 and results/b3.
-# Those folders are local (not tracked), so the parity items skip when they are absent.
+# B2 cost comparison and B3 La-cross scan against the stored results in results/b2 and results/b3.
+# Those folders are not tracked, so these items skip when they are absent.
 
-@testitem "B2 prep-vs-measure table equals the reference" tags = [:slow] begin
+@testitem "B2 prep-vs-measure table matches results/b2" tags = [:slow] begin
     using FTShadows
     REPO = pkgdir(FTShadows)
     ref = joinpath(REPO, "results", "b2", "prep_vs_measure.csv")
@@ -22,7 +22,7 @@ end
     @test FTShadows.cost_volume(Dict("data_qubits" => 9, "ancilla_qubits" => 8, "merged_rounds" => 3)) == 68
 end
 
-@testitem "B3 La-cross code and circuits equal results/b3" tags = [:slow] begin
+@testitem "B3 La-cross code record and memory circuit match results/b3" tags = [:slow] begin
     using FTShadows, JSON
     dir = joinpath(pkgdir(FTShadows), "results", "b3")
     if !isfile(joinpath(dir, "code.json"))
@@ -39,7 +39,7 @@ end
 end
 
 @testitem "B3 La-cross pieces" tags = [:bridge] begin
-    using FTShadows, PythonCall, Random
+    using FTShadows, PythonCall
     c = FTShadows.LaCross()
     @test (c.N, size(c.HX, 1), c.N - 2 * FTShadows.Circuits.gf2rank(c.HX)) == (65, 28, 9)
     @test FTShadows.gamma_order(c) == 168
@@ -49,20 +49,6 @@ end
     f = FTShadows.fold_checks(c)
     @test all(f[k]["preserves_stabilizer_group"] && f[k]["logical_action_matches_paper_up_to_stabilizers_and_sign"]
               for k in ("hadamard_fold", "phase_fold"))
-    # the ISD search equals the original implementation's (same numpy permutations); needs its local
-    # copy (see runtests.jl)
-    if isdir(joinpath(pkgdir(FTShadows), "reference", "python", "src"))
-        gf2 = pyimport("ftoracle.gf2")
-        np = pyimport("numpy")
-        rng = Xoshiro(7)
-        for trial in 1:4
-            A = rand(rng, Bool, 6, 14)
-            B = rand(rng, Bool, 2, 14)
-            w, _ = FTShadows.min_weight_codeword(A, B; iters = 20, seed = trial)
-            pw = gf2.min_weight_codeword(np.array(UInt8.(A)), np.array(UInt8.(B)); iters = 20, seed = trial)[0]
-            @test w == pyconvert(Int, pw)
-        end
-    end
     # a noiseless memory circuit is deterministic and silent
     py = FTShadows.Circuits.pycircuit(FTShadows.lacross_memory(c, 1e-3, 2; basis = "X", noise = "agnostic"))
     @test FTShadows.lacross_noiseless_check(py; shots = 50) == (0, 0)

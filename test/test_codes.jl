@@ -1,5 +1,5 @@
-# Codes, check lists, logical bases, gauging graphs and distances equal the reference values
-# (test/reference/circuits/codes.json, exported from the original implementation).
+# Codes, check lists, logical bases, gauging graphs and distances against the stored values in
+# test/reference/circuits/codes.json.
 
 @testitem "Python iteration orders are replayed" tags = [:circuits, :bridge] begin
     using PythonCall

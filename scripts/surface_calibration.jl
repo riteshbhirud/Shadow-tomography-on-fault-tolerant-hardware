@@ -1,6 +1,4 @@
-# Surface-code lattice-surgery flip rate q(r) per basis, and state independence.
-# Adaptive sampling to a target error count;
-# noise bravyi_cal, with sd6 and stim_generated as variants.
+# Surface-code lattice-surgery flip rate q(r) per basis and state independence (bravyi_cal noise; sd6, stim_generated variants).
 # Run: julia --project=. scripts/surface_calibration.jl [--quick] [--workers 12]
 # Output: results/taskA_julia/surface_qr.csv, surface_state_independence.csv, surface_calibration_meta.json
 const REPO = dirname(@__DIR__)

@@ -1,5 +1,4 @@
-# Shared by the circuit test items: rebuild a configuration of
-# test/reference/circuits/configs.json (exported from the original implementation).
+# Shared by the circuit test items: rebuild a configuration of test/reference/circuits/configs.json.
 @testmodule CircRef begin
 
 using FTShadows
@@ -96,8 +95,8 @@ sha_hex(s) = bytes2hex(sha256(s))
 """
     compare_config(rec; normalize=true)
 
-`(ok, message)` for one exported configuration: the Julia text, normalized by stim, must hash to
-the exported reference text, and the build record must agree.
+`(ok, message)` for one stored configuration: the Julia text, normalized by stim, must hash to
+the stored text, and the build record must agree.
 """
 function compare_config(rec; normalize::Bool=true)
     spec = rec["spec"]
@@ -105,9 +104,9 @@ function compare_config(rec; normalize::Bool=true)
         try
             build_config(spec)
         catch err
-            return true, "raised as in the reference: $(sprint(showerror, err))"
+            return true, "raised as recorded: $(sprint(showerror, err))"
         end
-        return false, "the reference raised ($(rec["error"])) but Julia built a circuit"
+        return false, "the stored record raised ($(rec["error"])) but Julia built a circuit"
     end
     c, b, e = build_config(spec)
     text = stim_text(c)
@@ -137,7 +136,7 @@ end
     noiseless_outcomes(b, shots; seed=0)
 
 Sample a p = 0 build with stim (bridge) and return the outcome bits (shots × targets), the parity
-of each target's records; fails if any detector fires (oracle.run's noiseless path).
+of each target's records; fails if any detector fires (as run_oracle does at p = 0).
 """
 function noiseless_outcomes(b, shots::Integer; seed::Integer=0)
     c = pycircuit(b.circuit)

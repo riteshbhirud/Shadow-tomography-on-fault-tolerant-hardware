@@ -1,10 +1,11 @@
-# Floating-point steps done exactly as numpy does them, so that weights and gaps agree with the
-# reference bit for bit, plus the conversions to the numpy/scipy objects the decoders take.
+# Floating-point steps in numpy's order (log, pairwise sums, min/max), so the weights and gaps in the
+# stored datasets are reproduced to the last bit. Also the conversions to the numpy/scipy objects the
+# decoders take.
 
 using SparseArrays
 
-# The C library's log, for code that copies C routines (scipy's ndtri). Julia's own `log` differs from
-# it in about 1e-4 of cases.
+# The C library's log, used by the ndtri routine in stats.jl. Julia's own `log` differs from it in
+# about 1e-4 of cases.
 _clog(x::Float64) = @ccall log(x::Float64)::Float64
 
 """
@@ -12,8 +13,8 @@ _clog(x::Float64) = @ccall log(x::Float64)::Float64
     llr(ps::Vector{Float64})
 
 Log-likelihood weight `ln((1 - p) / p)` of a mechanism with probability `p`, from numpy's `log`
-(one scalar call, or one call on the whole vector). numpy's float64 log is the C library's on some
-platforms and its own SIMD loop on others (x86 Linux), so the weights are numpy's on every platform.
+(one scalar call, or one call on the whole vector). numpy's float64 log depends on the platform
+(C library or its own SIMD loop), so numpy is called directly.
 """
 llr(p::Float64) = pyconvert(Float64, pymodule(:numpy).log((1 - p) / p))
 llr(ps::Vector{Float64}) = pyconvert(Vector{Float64}, pymodule(:numpy).log(pymodule(:numpy).asarray((1 .- ps) ./ ps)))
@@ -71,7 +72,7 @@ _isclose(a::Float64, b::Float64) = isfinite(a) && isfinite(b) ? abs(a - b) <= 1e
 # Python's builtin max(a, b): b only if it is strictly larger, so a NaN in second place is ignored.
 _pymax(a, b) = b > a ? b : a
 
-# Weight of a correction e (0/1 entries): llr[e.astype(bool)].sum()
+# Weight of a correction e (0/1 entries): sum of the llrs of the mechanisms it uses
 _weight(llrs::Vector{Float64}, e::AbstractVector) = npsum(llrs[e .!= 0])
 
 #### numpy / scipy objects
@@ -87,8 +88,7 @@ to_numpy_u8(M::AbstractArray) = _np().ascontiguousarray(_np().asarray(convert(Ar
 
 _from_numpy_u8(x::Py, dims...) = pyconvert(Array{UInt8}, _np().asarray(x; dtype = _np().uint8))
 
-# The decoders get canonical scipy matrices (sorted indices, int32 index arrays, uint8 ones), as
-# `lil -> tocsc` and `sp.vstack(...).tocsr()/.tocsc()` produce.
+# The decoders get canonical scipy matrices: sorted indices, int32 index arrays, uint8 ones.
 function _scipy_sparse(M::SparseMatrixCSC, format::Symbol)
     np = _np()
     S = format === :csc ? M : sparse(transpose(M))  # CSR of M = CSC of its transpose

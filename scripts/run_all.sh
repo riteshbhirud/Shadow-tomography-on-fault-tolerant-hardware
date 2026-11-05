@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
-# Reproduce every Task A / end-to-end / dataset result, then Task B. Environment: see README.md (Install).
-# Usage: bash scripts/run_all.sh [--fast]
-#   --fast: the test suite only (about 25 min with the slow items).
-# Long runs (marked ~h) are resumable: rerun the same command to continue.
-# Stim distance searches need up to ~10 GB each; run them one at a time.
-# Outputs go to results/*_julia/ and handover/data_julia/ so they never overwrite the stored reference results.
+# Reproduce every Task A, end-to-end, dataset and Task B result. Long runs (~h) resume when rerun.
+# Usage: bash scripts/run_all.sh [--fast]   (--fast: the test suite only, about 25 min)
+# Output: results/*_julia/ and handover/data_julia/, so the stored results are not overwritten.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export JULIA_PYTHONCALL_EXE="${JULIA_PYTHONCALL_EXE:-$PWD/.venv/bin/python}"
@@ -21,7 +18,7 @@ $JL scripts/calib_bravyi_decoder_sensitivity.jl   #     results/calibration_juli
 # surface code
 $JL scripts/surface_calibration.jl                # ~h  results/taskA_julia/surface_qr.csv, surface_state_independence.csv
 
-# BB72
+# BB72 (stim distance searches need up to ~10 GB each, so run them one at a time)
 $JL scripts/taskA_bb72_memory_sanity.jl           #     bb72_memory_sanity.json
 $JL scripts/taskA_bb_distances.jl                 #     bb72_distances.json (X, Z, adopted Y, minimal Y)
 $JL scripts/taskA_bb_gauss_order_screen.jl Y '{"target_cheeger": 1.5}' 8   # bb72_gauss_order_screen_Y.json

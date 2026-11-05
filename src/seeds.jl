@@ -1,4 +1,4 @@
-# Collision-free seeds from a description of the job .
+# Collision-free seeds from a description of the job.
 
 using SHA
 
@@ -57,7 +57,8 @@ end
 """
     seed_for(parts...) -> Int
 
-32-bit seed from the SHA-256 of the parts' Python reprs joined by `|`.
+32-bit seed from the SHA-256 of the parts' Python reprs joined by `|` (Python reprs so the seeds
+agree with those of the stored datasets).
 `seed_for("surface_calib", d, kind, term, state, r, noise, chunk)` differs for every configuration and
 chunk, so two configurations never share a noise realisation.
 """

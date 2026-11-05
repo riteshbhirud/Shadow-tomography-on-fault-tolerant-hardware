@@ -5,7 +5,7 @@
     rref(M)
 
 Row-reduced echelon form over GF(2), eliminating above and below each pivot, with the first
-nonzero row of a column as pivot row (as gf2.rref). Returns `(R, pivot_columns)`.
+nonzero row of a column as pivot row. Returns `(R, pivot_columns)`.
 """
 function rref(M::AbstractMatrix)
     R = Matrix{Bool}(isodd.(M))
@@ -36,7 +36,7 @@ gf2rank(M::AbstractMatrix) = isempty(M) ? 0 : length(rref(M)[2])
 """
     nullspace_gf2(M)
 
-Basis of {x : M x = 0} as rows, one per free column in increasing order (gf2.nullspace).
+Basis of {x : M x = 0} as rows, one per free column in increasing order.
 """
 function nullspace_gf2(M::AbstractMatrix)
     m, n = size(M)
@@ -67,7 +67,7 @@ css_stabilizers(HX, HZ) = Matrix{Bool}([HX falses(size(HX)); falses(size(HZ)) HZ
 """
     normalizer(S)
 
-Basis of the Paulis commuting with every row of `S` (gf2.normalizer).
+Basis of the Paulis commuting with every row of `S`.
 """
 function normalizer(S::AbstractMatrix)
     n = size(S, 2) ÷ 2
@@ -115,7 +115,7 @@ Base.length(R::RowSpace) = length(R.rows)
 """
     logical_basis(S; first=[])
 
-Symplectic logical basis `[(X_i, Z_i)]` of the stabilizer code with rows `S` (gf2.logical_basis):
+Symplectic logical basis `[(X_i, Z_i)]` of the stabilizer code with rows `S`:
 independent representatives from `first` then the normalizer, paired by symplectic Gram-Schmidt.
 """
 function logical_basis(S::AbstractMatrix; first=Vector{Bool}[])
@@ -147,7 +147,7 @@ end
 """
     gf2_solve(A, b)
 
-One solution of `A x = b` over GF(2), or `nothing` (builder.gf2_solve).
+One solution of `A x = b` over GF(2), or `nothing`.
 """
 function gf2_solve(A::AbstractMatrix, b::AbstractVector)
     m, n = size(A)

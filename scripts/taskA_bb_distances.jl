@@ -1,7 +1,6 @@
-# Deformed-code and circuit distances of BB72 X, Z, Y gauging, with all spectator logicals.
-# "Y_minimal" is the rejected h = 0.6 graph, kept to
-# reproduce its circuit distance 4.
-# Run: julia --project=. scripts/taskA_bb_distances.jl    Output: results/taskA_julia/bb72_distances.json
+# Deformed-code and circuit distances of BB72 X, Z, Y gauging with all spectators; "Y_minimal" is the rejected h = 0.6 graph.
+# Run: julia --project=. scripts/taskA_bb_distances.jl
+# Output: results/taskA_julia/bb72_distances.json
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")

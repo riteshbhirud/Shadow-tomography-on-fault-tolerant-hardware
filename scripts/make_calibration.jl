@@ -1,5 +1,4 @@
-# handover/calibration.csv: q per setting type, code and noise model, with 95% Wilson CIs.
-# Sections 'dataset_settings' and 'scaling'.
+# calibration.csv: q per setting type, code and noise model with 95% Wilson CIs (sections dataset_settings and scaling).
 # Run: julia --project=. scripts/make_calibration.jl [OUT]   (default handover/data_julia/calibration.csv)
 const REPO = dirname(@__DIR__)
 using FTShadows

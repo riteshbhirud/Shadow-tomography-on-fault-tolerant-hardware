@@ -2,7 +2,8 @@
 
 using SpecialFunctions: erfc
 
-# Cephes ndtri as scipy compiles it (fused multiply-adds), so `wilson` matches scipy bit for bit.
+# Cephes ndtri, with the fused multiply-adds of scipy's build, so the stored Wilson intervals are
+# reproduced to the last bit.
 const _NDTRI_P0 = (-5.99633501014107895267E1, 9.80010754185999661536E1, -5.66762857469070293439E1,
     1.39312609387279679503E1, -1.23916583867381258016E0)
 const _NDTRI_Q0 = (1.95448858338141759834E0, 4.67627912898881538453E0, 8.63602421390890590575E1,
@@ -27,7 +28,7 @@ _p1evl(x, c) = foldl((a, ci) -> fma(a, x, ci), Base.tail(c); init = x + c[1])
 """
     norm_ppf(y)
 
-Standard normal quantile (scipy's `norm.ppf`, bit for bit).
+Standard normal quantile (Cephes `ndtri`).
 """
 function norm_ppf(y0::Float64)
     y0 == 0 && return -Inf

@@ -3,19 +3,17 @@
 """
     MatchingGapDecoder(dem)
 
-PyMatching prediction plus the exact parity-constrained complementary weight, for a decomposed
-(graphlike) DEM.
+PyMatching prediction plus the exact complementary gap, for a decomposed (graphlike) DEM.
 
-For observable j a detector potential s with s_u ⊻ s_v = label on every bulk edge turns the observable
-into a boundary label l'(u) = l(e) ⊻ s_u. Boundary edges with l' = 1 go to an extra node A, the others
-to B, and each hypothesis o is one matching with A a defect iff o ⊻ Σ_T s_t = 1 (B fixes the parity).
-The minimum over o must equal the plain matching weight, with the same prediction; this is checked on
-every call. Conventions:
-- all parallel mechanisms are kept in the split graph (the prediction graph keeps the most likely one);
-- an odd bulk cycle (e.g. conjugate termination at r = 1) leaves no potential: the gap is NaN and
-  `gap_exact[j] = false`;
-- detector-free mechanisms flipping j cap the gap at their weight;
-- a hypothesis without any valid matching has weight `Inf`.
+For observable j, a detector potential s with s_u ⊻ s_v = label on every bulk edge moves the
+observable onto the boundary: l'(u) = l(e) ⊻ s_u. Boundary edges with l' = 1 go to an extra node A,
+the others to B, and hypothesis o is one matching with A a defect iff o ⊻ Σ_T s_t = 1. The smaller of
+the two weights is checked against the plain matching on every call.
+
+If a bulk cycle flips j (e.g. conjugate termination at r = 1) there is no potential, and the gap is
+NaN with `gap_exact[j] = false`. Detector-free mechanisms that flip j cap the gap at their weight.
+The split graph keeps all parallel mechanisms (the prediction graph only the most likely one), and a
+hypothesis with no valid matching has weight `Inf`.
 """
 mutable struct MatchingGapDecoder
     nd::Int

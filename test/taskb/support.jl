@@ -1,14 +1,14 @@
-# Shared helpers for the Task B parity tests: exact comparison against the saved reference results.
+# Helpers for the Task B tests: exact comparison with the stored results in results/taskB.
 @testmodule TaskBRef begin
     using FTShadows, JSON
     import FTShadows.TaskB as TB
     const RESULTS = joinpath(pkgdir(FTShadows), "results", "taskB")
 
-    """Whether the saved reference results are present (they are local only, not tracked)."""
+    """Whether results/taskB is present (it is local, not tracked)."""
     has_results() = isdir(RESULTS)
 
     function skip_message(what)
-        @info "results/taskB not found: skipping the full parity check of $what (it holds the stored reference results)"
+        @info "results/taskB not found: skipping the check of $what"
         return nothing
     end
 
@@ -28,9 +28,9 @@
     end
 
     """
-        same(julia, python) -> Bool
+        same(julia, stored) -> Bool
 
-    Exact structural equality of a Julia record and a parsed reference JSON value: equal keys, equal lengths,
+    Exact structural equality of a Julia record and a parsed stored JSON value: equal keys, equal lengths,
     integers equal as integers, floats bitwise equal as floats (so `1` and `1.0` differ, as they do in the file).
     """
     same(a, b) = (r = first_difference(a, b, "")) === nothing ? true : (@warn "records differ" r; false)
@@ -69,8 +69,8 @@
     """
         csv_matches(rows, columns, path)
 
-    Whether the CSV written by Python's csv.DictWriter equals the Julia rows cell by cell: floats are compared
-    bitwise after parsing, integers and strings as text, booleans as Python's True/False.
+    Whether a stored CSV equals the Julia rows cell by cell: floats are compared bitwise after parsing,
+    integers and strings as text, booleans as True/False.
     """
     function csv_matches(rows, path)
         lines = split(chomp(replace(read(path, String), "\r\n" => "\n")), "\n")
@@ -96,7 +96,7 @@
 
     small_refs() = JSON.parsefile(joinpath(TB.TASKB_REFDIR, "small_references.json"))
 
-    "A gate list in the JSON layout of the reference files: [name, qubits...] (a SWAPPERM carries its list)."
+    "A gate list in the JSON layout of the stored files: [name, qubits...] (a SWAPPERM carries its list)."
     gate_lists(gates) = [g.name == :SWAPPERM ? Any["SWAPPERM", g.qubits] : Any[string(g.name); g.qubits] for g in gates]
 
     const CACHE = Dict{Any,Any}()

@@ -1,7 +1,7 @@
 # La-cross [[65,9,4]] feasibility scan (Di Fini et al. arXiv:2610.12685, Pecorari et al.
 # arXiv:2404.13010): the code and its folds, a bare-ancilla memory circuit, and a BP-OSD memory Monte Carlo.
-# The memory circuit is built in our circuit IR, so its stim text equals the reference one; stim (DEM, sampling,
-# distance search) and ldpc's BP-OSD are bridged as everywhere else.
+# The memory circuit is built in the package's circuit IR. stim (DEM, sampling, distance search) and ldpc's
+# BP-OSD are called through PythonCall.
 
 using LinearAlgebra: I
 using OrderedCollections: OrderedDict
@@ -57,8 +57,8 @@ lc_c_u(c::LaCross, u) = isodd.(Int.(permutedims(c.G)) * Int.(u))
 """
     canonical_logicals(code) -> OrderedDict((i, j) => (x, z))
 
-Eq. eq:canonical-reps: Xbar_ij ~ X(eps_i c_{e_j}^T, 0) (row i), Zbar_ij ~ Z(c_{e_i} eps_j^T, 0) (column j), as
-length-N bit vectors, keys 0-based in (i, j) order.
+Canonical representatives (2610.12685): Xbar_ij ~ X(eps_i c_{e_j}^T, 0) (row i), Zbar_ij ~ Z(c_{e_i} eps_j^T, 0)
+(column j), as length-N bit vectors, keys 0-based in (i, j) order.
 """
 function canonical_logicals(c::LaCross)
     k = c.k_seed
@@ -89,7 +89,7 @@ function transpose_perm(c::LaCross)
     return perm
 end
 
-# all w-subsets of 0:n-1 in itertools.combinations order, calling f on each until it returns true
+# all w-subsets of 0:n-1 in lexicographic order, calling f on each until it returns true
 function _each_combination(f, n::Integer, w::Integer)
     comb = collect(0:w-1)
     while true
@@ -137,7 +137,7 @@ function exhaustive_min_logical(Hcheck::AbstractMatrix, Hstab::AbstractMatrix, w
     return nothing, nothing, count_checked
 end
 
-# the invertible k x k matrices over GF(2), in the reference bit order
+# the invertible k x k matrices over GF(2); bit t of the counter is entry t in row-major order
 function _gl_k2(k::Integer)
     out = Matrix{Bool}[]
     for bits in 0:(1<<(k*k))-1
@@ -147,7 +147,7 @@ function _gl_k2(k::Integer)
     return out
 end
 
-"""|Gamma_{k,n}| = #{A in GL(k,2): mu_n(A v) = mu_n(v) for all v} (Eqs. eq:gamma, eq:multiplicity)."""
+"""|Gamma_{k,n}| = #{A in GL(k,2): mu_n(A v) = mu_n(v) for all v}, with mu_n the column multiplicity (2610.12685)."""
 function gamma_order(c::LaCross)
     k = c.k_seed
     mu = Dict{Vector{Bool},Int}()
@@ -162,8 +162,8 @@ end
 """
     cnot_count_gauss(Q) -> (#CNOT, #row swaps)
 
-CNOT count of a naive Gaussian-elimination synthesis of the reversible linear map Q (row operations only; an
-UPPER BOUND, not optimal). A missing pivot is fixed with a CNOT, not a swap.
+CNOT count of a naive Gaussian-elimination synthesis of the reversible linear map Q (row operations only, so
+an upper bound). A missing pivot is fixed with a CNOT, not a swap.
 """
 function cnot_count_gauss(Q::AbstractMatrix)
     A = Matrix{Bool}(isodd.(Q))
@@ -187,7 +187,7 @@ function cnot_count_gauss(Q::AbstractMatrix)
     return cn, sw
 end
 
-# x mod 2 of the rounded float matrix, as numpy's np.rint(...) % 2 / np.round(...) % 2
+# round a float matrix to integers, then mod 2
 _round_mod2(M) = mod.(round.(Int, M), 2)
 
 """
@@ -314,7 +314,7 @@ function lacross_code_record(; t0::Float64=time())
     @assert !any(isodd, Int.(c.HX) * permutedims(Int.(c.HZ)))
     rx, rz = Circuits.gf2rank(c.HX), Circuits.gf2rank(c.HZ)
     K = c.N - rx - rz
-    # codewords u G for u in itertools.product((0, 1), repeat=k)
+    # codewords u G for every u in GF(2)^k (first bit of u most significant in b)
     cw = [isodd.(permutedims(Int.(G)) * [isodd(b >> (c.k_seed - 1 - t)) for t in 0:c.k_seed-1]) for b in 0:(1<<c.k_seed)-1]
     seed_weights = sort([count(x) for x in cw if any(x)])
     seed_T_rank = Circuits.gf2rank(permutedims(H))
@@ -367,8 +367,8 @@ end
 """
     lacross_memory(code, p, rounds; basis="Z", noise="uniform", x_order=0:5, z_order=0:5) -> Circuits.Circuit
 
-Bare-ancilla memory circuit (b3_lacross.build_memory). One ancilla per check; each round resets the ancillas,
-runs 6 CNOT layers for all X checks, then 6 for all Z checks, and measures the ancillas. Layer t of a block is
+Bare-ancilla memory circuit. One ancilla per check. Each round resets the ancillas, runs 6 CNOT layers for all
+X checks, then 6 for all Z checks, and measures the ancillas. Layer t of a block is
 slot t of every check (principal offsets 0, 1, k; check-sector offsets 0, 1, k).
 
 `noise="uniform"`: DEPOLARIZE2(p) after every CNOT, DEPOLARIZE1(p) on qubits idle in a CNOT layer and on data
@@ -502,8 +502,8 @@ end
     lacross_circuit_record(; bases="Z", max_dets="3,4", max_degree=6, save=false, out=nothing)
 
 The `circuit.json` record of the `circuit` step: structure and noiseless checks of the r = 4, p = 1e-3
-memory circuits, then stim's bounded circuit-distance search. With `out`, the circuits are saved as in the
-reference (uniform Z always, all four with `save`).
+memory circuits, then stim's bounded circuit-distance search. With `out`, the uniform Z circuit is saved
+there (all four with `save`).
 """
 function lacross_circuit_record(; bases::AbstractString="Z", max_dets::AbstractString="3,4", max_degree::Integer=6,
                                 save::Bool=false, out=nothing)
@@ -545,7 +545,7 @@ const _LACROSS_DEC = Dict{String,Any}()
 """
     lacross_sim_batch(key, p, basis, noise, shots, seed, dec) -> (fails, shots)
 
-One batch of the BP-OSD memory Monte Carlo (b3_lacross._worker): sample the r = 4 memory circuit with stim at
+One batch of the BP-OSD memory Monte Carlo: sample the r = 4 memory circuit with stim at
 `seed`, decode every shot with ldpc's BpOsdDecoder (min-sum, OSD-CS) built from the DEM, and count shots where
 any of the 9 logical observables is wrong. The decoder is cached per process and `key`.
 """
@@ -572,8 +572,6 @@ function lacross_sim_batch(key, p, basis, noise, shots, seed, dec)
     end
     return fails, shots
 end
-
-# Python's float ** (C pow), so the per-round rates are bitwise the reference ones
 
 """
     lacross_sim_record(key, p, basis, noise, fails, shots, dec, seed_base, seconds, workers)

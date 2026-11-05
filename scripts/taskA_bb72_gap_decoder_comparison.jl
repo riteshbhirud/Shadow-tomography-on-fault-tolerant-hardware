@@ -1,9 +1,5 @@
-# Choice of the complementary decoder for the plain-anchored Relay gap.
-# Same 1000 shots (Xbar gauging, r = 3,
-# p = 3e-3, sd6 noise) under several gap decoders: s/shot, q, AUC, kept-shot q. The later
-# 'anchored_relay5' entry uses bravyi_cal noise and is not comparable.
-# Run: julia --project=. scripts/taskA_bb72_gap_decoder_comparison.jl [VARIANT ...] [--workers N]
-# (default: all variants, one worker each; a subset is merged into the existing JSON)
+# Gap decoders for the plain-anchored Relay gap on the same 1000 shots (Xbar, r = 3, p = 3e-3, sd6): s/shot, q, AUC, kept-shot q.
+# Run: julia --project=. scripts/taskA_bb72_gap_decoder_comparison.jl [VARIANT ...] [--workers N]   (default all variants)
 # Output: results/taskA_julia/bb72_gap_decoder_comparison.json
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
@@ -26,6 +22,8 @@ finally
     rmprocs(wp)
 end
 out_save = nothing
+# a subset run is merged into the existing JSON (its later 'anchored_relay5' entry uses bravyi_cal noise, so it is not
+# comparable with the rest)
 if !isempty(only_) && isfile(fout)
     old = FTShadows.read_json_or_empty(fout)
     for (k, v) in out

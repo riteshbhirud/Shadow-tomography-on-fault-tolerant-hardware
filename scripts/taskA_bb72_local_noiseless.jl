@@ -1,7 +1,6 @@
-# Noiseless exactness of every compiled BB72 local setting, 2 and 3 logical qubits.
-# Random stabilizer states and joint
-# eigenstates; every subset product must match the exact expectation.
-# Run: julia --project=. scripts/taskA_bb72_local_noiseless.jl    Output: results/taskA_julia/bb72_local_noiseless.json
+# Noiseless exactness of every compiled BB72 local setting on 2 and 3 logicals: each subset product must match the exact value.
+# Run: julia --project=. scripts/taskA_bb72_local_noiseless.jl
+# Output: results/taskA_julia/bb72_local_noiseless.json
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")

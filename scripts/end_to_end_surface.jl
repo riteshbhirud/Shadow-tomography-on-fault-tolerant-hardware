@@ -1,8 +1,6 @@
-# End-to-end check: surface-code Bell / GHZ
-# states, random native settings, reference estimator vs exact values. Ensembles: "local" (uniform
-# per-patch X/Z readouts) and "native" (1/2 local, 1/4 ZZ-chain, 1/4 XX-chain surgery).
+# End-to-end check on surface-code Bell / GHZ states: shadow estimates from random "local" and "native" settings vs exact values.
 # Run: julia --project=. scripts/end_to_end_surface.jl
-# Output: results/e2e_julia/e2e_surface.csv, results/e2e_julia/e2e_surface.json
+# Output: results/e2e_julia/e2e_surface.csv and e2e_surface.json
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")

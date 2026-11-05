@@ -1,7 +1,7 @@
 # Surface-code studies behind results/taskA and results/e2e: lattice-surgery q(r), the in-place Y
 # measurement, Gidney's memory numbers and the end-to-end check. The drivers in scripts/ only parse
-# arguments, start workers and write files. Seeds, chunking and stopping rules are the reference's, so
-# the counts equal the stored ones for the same configuration.
+# arguments, start workers and write files. Seeds, chunking and stopping rules are fixed here, so a rerun
+# of a configuration gives the same counts.
 
 #### Lattice-surgery flip rate q(r)
 
@@ -21,8 +21,8 @@ _qr_cfg(d, kind, term, state, r, noise) =
 """
     surface_qr_configs() -> Vector{OrderedDict}
 
-The configurations of surface_qr.csv in the reference's order: conjugate termination (d = 5 up to
-r = 10, d = 7 up to r = 12), same termination (d = 5), sd6 noise (d = 5), stim_generated noise (ZZ).
+The configurations of surface_qr.csv: conjugate termination (d = 5 up to r = 10, d = 7 up to r = 12), same
+termination (d = 5), sd6 noise (d = 5), stim_generated noise (ZZ).
 """
 function surface_qr_configs()
     cfgs = OrderedDict{String,Any}[]
@@ -37,7 +37,7 @@ function surface_qr_configs()
             push!(cfgs, _qr_cfg(5, kind, "conjugate", sname, r, "sd6"))
         end
     end
-    for r in 1:8  # stim-generated-like noise for comparison with reference runs
+    for r in 1:8  # stim-generated-like noise, for comparison
         push!(cfgs, _qr_cfg(5, "ZZ", "conjugate", "00", r, "stim_generated"))
     end
     return cfgs
@@ -64,9 +64,8 @@ end
 """
     surface_qr_adaptive(configs, target_errors, max_shots; pmap=map, chunk=SURFACE_QR_CHUNK) -> rows
 
-Run chunks two at a time per configuration until it has `target_errors` errors or `max_shots` shots
-(the reference's `adaptive`). One row per configuration: its fields, then p, shots, errors, q, the Wilson
-interval and the setting's cost.
+Run chunks two at a time per configuration until it has `target_errors` errors or `max_shots` shots. One
+row per configuration: its fields, then p, shots, errors, q, the Wilson interval and the setting's cost.
 """
 function surface_qr_adaptive(configs, target_errors, max_shots; pmap = map, chunk::Integer = SURFACE_QR_CHUNK)
     st = [Dict{String,Any}("err" => 0, "shots" => 0, "seed" => 0, "cost" => nothing) for _ in configs]
@@ -174,7 +173,7 @@ end
 """
     gidney_memory_circuit(b, d) -> Py
 
-Gidney's own circuit (midout, bridged): basis `b`, distance d, SI1000 noise at p = 1e-3, d memory rounds,
+Gidney's own circuit from `midout`: basis `b`, distance d, SI1000 noise at p = 1e-3, d memory rounds,
 d÷2 boundary rounds for Y.
 """
 function gidney_memory_circuit(b::AbstractString, d::Integer)
@@ -226,7 +225,7 @@ end
     gidney_reproduction(stats; pmap=map, workers=8, chunk=100_000, target=300, max_shots=20_000_000)
 
 The rows of surface_y_gidney_reproduction.json. Every round runs `workers` chunks per active
-configuration (as the reference, so the counts depend on `--workers`).
+configuration, so the counts depend on `--workers`.
 """
 function gidney_reproduction(stats; pmap = map, workers::Integer = 8, chunk::Integer = 100_000,
                              target::Integer = 300, max_shots::Integer = 20_000_000)
@@ -269,7 +268,7 @@ end
 """
     y_reproduction(circuit_dir) -> OrderedDict(d => Bool)
 
-Whether Gidney's generator (bridged) reproduces his published Y circuit (stripped text) for d = 3, 5, 7.
+Whether Gidney's generator reproduces his published Y circuit (stripped text) for d = 3, 5, 7.
 """
 function y_reproduction(circuit_dir::AbstractString)
     out = OrderedDict{Int,Bool}()
@@ -331,7 +330,7 @@ end
 
 """
 Circuit distance (stim search) and shortest graphlike error per (d, b), b from d÷2 to the default.
-`seconds` is wall time, as in the reference.
+`seconds` is wall time.
 """
 function y_distances()
     out = OrderedDict{String,Any}[]
@@ -368,7 +367,7 @@ function y_readout_crosscheck()
     return out
 end
 
-#### End-to-end check with the reference estimator
+#### End-to-end check of the estimator
 
 const E2E_D, E2E_R = 3, 3
 const E2E_STATES = OrderedDict("bell" => (2, [("ZZ", 0), ("XX", 0)]),
@@ -395,8 +394,8 @@ end
 """
     e2e_run(state, ensemble, p, n_draws, seed) -> rows
 
-Draw `n_draws` settings (numpy's `default_rng(seed).choice`, bridged), run each setting's shots through
-the oracle, and compare the reference estimator with the exact value for every non-identity target.
+Draw `n_draws` settings with numpy's `default_rng(seed)`, run each setting's shots through the oracle,
+and compare the reference estimator with the exact value for every non-identity target.
 """
 function e2e_run(state_name, ens_name, p, n_draws, seed)
     n, gens = E2E_STATES[state_name]

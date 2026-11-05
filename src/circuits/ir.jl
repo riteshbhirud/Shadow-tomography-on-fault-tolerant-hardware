@@ -1,6 +1,6 @@
 # Circuit IR: stim instructions as plain data, emitted as stim text. `append!` fuses an
 # instruction into the previous one when stim's Circuit.append would (same gate, same arguments,
-# gate not an annotation), so the emitted text equals Python's `str(circuit)`.
+# gate not an annotation), so the text is the same as stim's own rendering.
 
 @enum TargetKind::UInt8 QUBIT REC PAULI_X PAULI_Y PAULI_Z COMBINER
 

@@ -1,8 +1,6 @@
-# Generate the v1.0/v1.1 handover datasets.
-# Each dataset: <name>.meta.json, .records.jsonl (one shot per line, in draw order) and .exact.csv. Exact values
-# come from the logical state only, independently of the circuits.
-# Output goes to handover/data_julia/ by default, never to handover/data/.
+# Generate the v1.0/v1.1 datasets: <name>.meta.json, .records.jsonl (one shot per line) and .exact.csv.
 # Run: julia --project=. scripts/make_datasets.jl [--only NAME] [--draws N] [--bb-draws N] [--workers 3] [--out DIR]
+# Output: handover/data_julia/ by default, never handover/data/.
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")

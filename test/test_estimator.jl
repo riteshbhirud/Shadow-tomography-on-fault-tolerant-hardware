@@ -1,4 +1,4 @@
-# The reference inverse-channel estimator and its use on oracle records. The estimator is only a test
+# The inverse-channel estimator and its use on oracle records. The estimator is only a test
 # helper, so it lives here and not in src/.
 
 @testmodule RefEstimator begin
@@ -70,7 +70,7 @@
     end
 end
 
-@testitem "reference estimator: Pauli products and decompositions" tags = [:estimator] setup = [RefEstimator] begin
+@testitem "inverse-channel estimator: Pauli products and decompositions" tags = [:estimator] setup = [RefEstimator] begin
     using .RefEstimator: mul, decompose
     # Pauli multiplication and decomposition
     @test mul("X", "Z") == (3, "Y")  # XZ = -iY
@@ -79,7 +79,7 @@ end
     @test decompose("XI", ["ZZ"]) === nothing
 end
 
-@testitem "reference estimator is unbiased on exact samples" tags = [:estimator, :bridge] setup = [RefEstimator] begin
+@testitem "inverse-channel estimator is unbiased on exact samples" tags = [:estimator, :bridge] setup = [RefEstimator] begin
     using PythonCall
     using .RefEstimator: lambdas, estimate
     # the estimator is unbiased on exact samples: Bell state, local X/Z ensemble, outcomes drawn classically
@@ -115,7 +115,7 @@ end
     @test isnan(est["YY"][1])
 end
 
-@testitem "oracle records feed the reference estimator" tags = [:estimator, :oracle] setup = [RefEstimator] begin
+@testitem "oracle records feed the inverse-channel estimator" tags = [:estimator, :oracle] setup = [RefEstimator] begin
     using FTShadows.Circuits: setting_experiment
     # oracle records feed the estimator: the documented record
     # (key "setting") goes straight into the estimator

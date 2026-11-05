@@ -10,9 +10,5 @@ using TestItemRunner
 # FTSHADOWS_TEST_FILES=decode,oracle runs only the files whose names contain one of the words.
 const FAST = get(ENV, "FTSHADOWS_TEST", "") == "fast"
 const FILES = filter(!isempty, split(get(ENV, "FTSHADOWS_TEST_FILES", ""), ","))
-# Items tagged :pyref compare live with the original implementation; they run only when a local copy of it
-# sits in reference/python (not tracked) and is installed in the venv.
-const PYREF = isdir(joinpath(REPO, "reference", "python", "src"))
-PYREF || @info "reference/python not found: skipping the :pyref items"
-keep(ti) = !(FAST && :slow in ti.tags) && (PYREF || !(:pyref in ti.tags)) && (isempty(FILES) || any(f -> occursin(f, basename(ti.filename)), FILES))
+keep(ti) = !(FAST && :slow in ti.tags) && (isempty(FILES) || any(f -> occursin(f, basename(ti.filename)), FILES))
 @run_package_tests filter = keep

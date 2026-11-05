@@ -13,8 +13,8 @@ fixed_points(label::AbstractString) = parse(Int, rstrip(split(label, "fixed poin
 """
     qc_crosscheck(code, e)
 
-Logical and physical action of `e` recomputed from its gate list with QuantumClifford tableaux (independent of
-the symplectic construction), compared with `e.logical` and `e.phys`.
+Recompute the logical and physical action of `e` from its gate list with QuantumClifford tableaux and compare
+with `e.logical` and `e.phys`.
 """
 function qc_crosscheck(code::StabilizerCode, e::Element)
     L = logicals(code)
@@ -26,8 +26,8 @@ end
 """
     build_groups(name; timings=false) -> (record, kept, ensembles, folds, code)
 
-The `groups_<code>.json` record (per-ensemble run times only with `timings=true`), the kept generators of every
-ensemble and the candidate elements. Needs `using Oscar`.
+The `groups_<code>.json` record, the kept generators of every ensemble and the candidate elements. Needs
+`using Oscar`.
 """
 function build_groups(name::AbstractString; timings::Bool=false)
     code = make_bb_code(name, "fgh")
@@ -98,8 +98,8 @@ end
 """
     crosscheck_sample(ens, folds, kept)
 
-The elements exported for the state-level sign check (`julia_export_<code>.json`): the elements that
-realise the kept generators of the three largest ensembles, then the first fold with fixed points.
+Elements for the state-level sign check: those realising the kept generators of the three largest ensembles,
+then the first fold with fixed points.
 """
 function crosscheck_sample(ens::AbstractDict, folds, kept::AbstractDict)
     alls = all_elements(ens)
@@ -116,11 +116,10 @@ end
 """
     signed_crosscheck(code, e, taus, rng; trials=3) -> (prediction_ok, negative_control_ok, sign_negative_control_ok)
 
-State-level check of one element with signs: random
-logical stabilizer states of the code are evolved through `e.gates`; every code stabilizer must keep
-expectation +1 and every predicted image (signed with `taus`, phases tracked through the ordered products) must
-have expectation +1. Negative controls: the identity prediction must fail when Λ ≠ I, and the bare circuit must
-flip some stabilizer sign when the correction is nonempty.
+State-level sign check of one element. Random logical stabilizer states are evolved through `e.gates`. Every
+code stabilizer and every predicted image (signed with `taus`) must have expectation +1. Negative controls:
+the identity prediction fails when Λ ≠ I, and the bare circuit flips some stabilizer sign when the correction
+is nonempty.
 """
 function signed_crosscheck(code::StabilizerCode, e::Element, taus, rng; trials::Integer=3)
     n, k = code.n, logical_k(code)

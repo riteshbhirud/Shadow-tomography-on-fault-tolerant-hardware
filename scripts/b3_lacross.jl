@@ -1,8 +1,6 @@
-# La-cross [[65,9,4]] feasibility scan.
-# Subcommands: code (checks, k, distance, canonical logicals, folds), circuit (memory circuit, determinism, bounded
-# circuit distance), sim (BP-OSD memory Monte Carlo), summary (lacross_summary.json).
+# La-cross [[65,9,4]] feasibility scan: code (checks, distance, folds), circuit (circuit distance), sim (BP-OSD memory), summary.
 # Run: julia --project=. scripts/b3_lacross.jl {code|circuit|sim|summary} [options] [--out DIR]
-# Output goes to results/b3_julia/ unless --out is given.
+# Output: results/b3_julia/ unless --out is given.
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")

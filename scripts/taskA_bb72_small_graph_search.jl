@@ -1,7 +1,4 @@
-# Smallest gauging graph with circuit distance 6 for the weight-6 Xbar_0 / Zbar_0 of BB72.
-# Extra qubits = 2|E| + 1. Screens
-# |E| = 5..8 with the measured logical only, then (--spectator-screen) with all readable spectators.
-# Graph samples are numpy draws (default_rng(20261030), (20261031)) through the bridge, as in the reference.
+# Smallest gauging graph (2|E| + 1 extra qubits) with circuit distance 6 for the weight-6 Xbar_0 / Zbar_0 of BB72.
 # Run: julia --project=. scripts/taskA_bb72_small_graph_search.jl [--spectator-screen] [--workers 3]
 # Output: results/taskA_julia/bb72_small_graph_search*.json
 const REPO = dirname(@__DIR__)
@@ -21,7 +18,7 @@ mkpath(OUT)
 wp = addprocs(workers; exeflags = "--project=$(Base.active_project())")
 @everywhere wp using FTShadows
 screen(jobs) = pmap(j -> FTShadows.small_graph_job(j...; rounds = R), WorkerPool(wp), jobs)
-# `rng.choice(n, k, replace=False)`, sorted: the sampled positions (1-based)
+# numpy's rng.choice(n, k, replace=False), sorted and 1-based, so the samples follow the fixed seeds
 pick(rng, n, k) = sort(pyconvert(Vector{Int}, rng.choice(n, k; replace = false))) .+ 1
 histogram(rows) = OrderedDict(string(d) => count(r -> r["distance"] == d, rows) for d in sort(unique(r["distance"] for r in rows)))
 

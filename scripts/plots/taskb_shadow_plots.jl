@@ -1,12 +1,11 @@
-# Task B shadow-map figures: learnable fraction and
-# median squared norm per logical weight, and the norm histogram of the largest ensemble, with mixed readout.
+# Task B shadow-map figures (mixed readout): learnable fraction and median squared norm per weight, norm histogram of the largest ensemble.
 # Run: julia --project=scripts/plots scripts/plots/taskb_shadow_plots.jl DIR [BB72] [gross] [--dump FILE]
-# Reads shadow_<code>.json and lambda_mix_<code>_<ensemble>.npy from DIR and writes the PNGs next to them.
+# Reads shadow_<code>.json and lambda_mix_*.npy from DIR and writes the PNGs there.
 using Printf
 import NPZ
 include(joinpath(@__DIR__, "common.jl"))
 
-# matplotlib's default colour cycle, which the reference figures use
+# matplotlib's default colour cycle
 const TAB10 = Makie.to_colormap(:tab10)
 
 # logical weight of every Pauli index v = x | z << k

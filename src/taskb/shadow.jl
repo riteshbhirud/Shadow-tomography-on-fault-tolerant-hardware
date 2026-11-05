@@ -3,8 +3,8 @@
 # λ_P = Pr_g[g P g† is Z-type] (X-type for all-X readout), ||P||² = 1/λ_P (Bu et al. 2202.03272, Prop. 3). For
 # uniform g, g(P) is uniform on the orbit of P, so λ^Z_P = |orbit(P) ∩ Z-type| / |orbit(P)|.
 #
-# Several helpers below copy numpy's floating-point behaviour on purpose (pairwise summation, np.round), so the
-# Julia records equal the saved ones bit for bit.
+# The np_* and py_* helpers below follow numpy/Python float conventions (pairwise summation, np.round,
+# round, %g) so the JSON and CSV outputs stay comparable with the stored results.
 
 """
     pauli_masks(k) -> (xmask, zmask)
@@ -62,7 +62,7 @@ end
 """
     np_sum(x)
 
-Sum with numpy's pairwise summation (blocks of 128, 8 accumulators), so float totals match numpy exactly.
+Pairwise summation in numpy's blocking (blocks of 128, 8 accumulators).
 """
 function np_sum(x::AbstractVector{Float64})
     function pw(lo, n)
@@ -129,8 +129,8 @@ pyfmt_g(x::Float64, prec::Integer=6) = Printf.format(Printf.Format("%.$(prec)g")
 """
     weight_table(lam, weights, k; max_w=k, groups=nothing)
 
-Per-weight statistics of λ (identity excluded), one `Dict` per weight with the keys of the stored table.
-`groups` may hold precomputed index sets per weight.
+Per-weight statistics of λ (identity excluded), one `Dict` per weight. `groups` may hold precomputed index
+sets per weight.
 """
 function weight_table(lam::AbstractVector{Float64}, weights::AbstractVector, k::Integer;
                       max_w::Integer=k, groups=nothing)
@@ -157,7 +157,7 @@ function weight_table(lam::AbstractVector{Float64}, weights::AbstractVector, k::
             rounded = sort(np_round.(norms, 9))
             hist = OrderedDict{String,Int}()
             for v in unique(rounded)
-                hist[pyfmt_g(v)] = count(==(v), rounded)   # a later value with the same label wins, as in a Python dict
+                hist[pyfmt_g(v)] = count(==(v), rounded)   # on a label collision the later value wins
             end
             row["norm2_histogram"] = hist
         end
@@ -194,8 +194,8 @@ const SHADOW_CSV_COLUMNS = ["code", "ensemble", "order", "readout", "weight", "n
 """
     shadow_map(name, k, basis, generators, orders, descriptions) -> (record, csv_rows, lambda_mix)
 
-The native-ensemble shadow map of one code: the `shadow_<code>.json`
-record, the rows of `shadow_<code>_by_weight.csv` and the `Float32` λ_mix array of every ensemble.
+The native-ensemble shadow map of one code: the `shadow_<code>.json` record, the rows of
+`shadow_<code>_by_weight.csv` and the `Float32` λ_mix array of every ensemble.
 `generators` maps ensemble name to its kept logical generators (ensembles in [`ENSEMBLES`](@ref) order).
 """
 function shadow_map(name, k::Integer, basis, generators::AbstractDict, orders::AbstractDict, descriptions::AbstractDict)

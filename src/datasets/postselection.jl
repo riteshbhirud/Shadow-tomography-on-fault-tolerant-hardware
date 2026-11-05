@@ -1,7 +1,7 @@
-# Postselection on the decoder gap for the noisy Nov-20 datasets, a check of our data
-# For gap cuts at quantiles 0-0.5: per setting the kept fraction and
-# the flip rate of stabilizer-group elements, and the fidelity estimate with lambda recomputed from the
-# kept setting frequencies. Quantiles are numpy's (bridged); means and standard errors follow numpy's sums.
+# Postselection on the decoder gap for the noisy Nov-20 datasets. For gap cuts at quantiles 0-0.5: per
+# setting the kept fraction and the flip rate of stabilizer-group elements, and the fidelity estimate with
+# lambda recomputed from the kept setting frequencies. Quantiles come from numpy so the cuts match the
+# stored tables.
 
 const POSTSELECTION_QUANTILES = (0.0, 0.05, 0.1, 0.2, 0.3, 0.5)
 
@@ -25,7 +25,7 @@ _matches(g, S) = all(g[i] == 'I' || S[i] == g[i] for i in eachindex(g))
 """
     postselection_fidelity(bases, vals, group, m) -> (F, se)
 
-Reference estimator: per shot 2^-m (1 + sum_g sign_g [match] prod / lambda_g), with lambda the matching
+Fidelity estimate: per shot 2^-m (1 + sum_g sign_g [match] prod / lambda_g), with lambda the matching
 fraction of these shots. (NaN, NaN) if some element is never measured.
 """
 function postselection_fidelity(bases, vals, group, m)

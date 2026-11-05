@@ -1,7 +1,8 @@
 # Surface-code local Pauli settings, including Y, built from per-patch fragments.
 # Each patch is measured by its own fragment (Gidney's in-place Y measurement, arXiv:2302.07395, or
 # an X/Z readout) after an ideal multi-patch state preparation. Gidney's generator (`midout`,
-# vendored in python/gidney_inplace_y) runs through the bridge; parsing, noise and composition are here.
+# vendored in python/gidney_inplace_y) is called through PythonCall. Parsing, noise and composition
+# are done here.
 
 const VENDOR = joinpath(dirname(dirname(@__DIR__)), "python", "gidney_inplace_y")
 # Smallest padding b >= d ÷ 2 with verified circuit distance d; at d = 7, b = 3 gives distance 6.

@@ -59,7 +59,7 @@ check_dicts(c::BBCode) = vcat(x_checks(c), z_checks(c))
     css_logical_basis_with(code, x0, z0)
 
 CSS symplectic logical basis `[(Xbar_i, Zbar_i)]` (symplectic vectors) whose first pair is the
-anticommuting pair `(x0, z0)` (bb.BBCode.css_logical_basis_with).
+anticommuting pair `(x0, z0)`.
 """
 function css_logical_basis_with(code::BBCode, x0::Vector{Bool}, z0::Vector{Bool})
     n = code.n

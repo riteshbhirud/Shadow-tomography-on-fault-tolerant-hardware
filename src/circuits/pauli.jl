@@ -1,4 +1,4 @@
-# Phase-free Paulis. `PauliDict` is the {qubit => 'X'|'Y'|'Z'} dict used throughout; it is
+# Phase-free Paulis. `PauliDict` is the {qubit => 'X'|'Y'|'Z'} dict used throughout. It is
 # insertion-ordered because that order reaches the circuits (gate order of checks without an
 # explicit order, local detectors). `PVec` is the tracker's bit encoding.
 
@@ -15,13 +15,12 @@ pauli(d::PauliDict) = d
 """
     sortedpauli(p)
 
-The pairs of `p` sorted by qubit (Python's `sorted(p.items())`).
+The pairs of `p` sorted by qubit.
 """
 sortedpauli(p) = sort!(collect(p); by=first)
 
-# x bits at 0..n-1 and z bits at W..W+n-1 with W a multiple of 64, so the two halves are
-# chunk-aligned. A single integer x | z << n would give the same pivot order (z bits above x bits, each by qubit) is
-# order, and pivots are only compared, never used as numbers.
+# x bits at 0..n-1 and z bits at W..W+n-1, with W a multiple of 64 so the halves are chunk-aligned.
+# Pivots are only compared, and their order (z bits above x bits, each by qubit) is the same as for x | z << n.
 struct PVec
     v::Vector{UInt64}
 end
@@ -98,7 +97,7 @@ end
 """
     pauli_product(n, dicts)
 
-Phase-free product of Pauli dicts on `n` qubits (surface.pauli_product); ascending qubit order.
+Phase-free product of Pauli dicts on `n` qubits, in ascending qubit order.
 """
 function pauli_product(n::Integer, dicts)
     alg = PauliAlgebra(n)

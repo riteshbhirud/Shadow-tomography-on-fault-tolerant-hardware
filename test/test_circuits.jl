@@ -1,6 +1,5 @@
-# Circuits: (a) every exported configuration builds to the reference circuit text and build record;
-# (b) noiseless circuits give the exact logical outcomes; (c) circuit distances. Decoding is tested with
-# the oracle.
+# Circuits: (a) every stored configuration builds to the stored circuit text and build record;
+# (b) noiseless circuits give the exact logical outcomes; (c) circuit distances. Decoding is tested with the oracle.
 
 @testitem "IR: stim text, fusion and parsing" tags = [:circuits, :bridge] setup = [CircRef] begin
     using .CircRef, PythonCall
@@ -43,7 +42,7 @@ end
     @test q === nothing || !iszero(q[2])  # Z0Z1 information destroyed by the conditional flip
 end
 
-@testitem "circuits identical to the reference: surface surgery, readout, memory" tags = [:circuits] setup = [CircRef] begin
+@testitem "surface surgery, readout and memory circuits match the stored text" tags = [:circuits] setup = [CircRef] begin
     using .CircRef
     fast = ("single_patch_readout", "multi_patch_surgery", "setting_experiment", "multi_patch_readout",
             "bravyi_memory", "bb72_readout", "multi_gauging")
@@ -56,10 +55,10 @@ end
     @test length(recs) == 548
 end
 
-@testitem "circuits identical to the reference: all configurations" tags = [:circuits, :slow, :bridge] setup = [CircRef] begin
+@testitem "all stored circuit configurations build identically" tags = [:circuits, :slow, :bridge] setup = [CircRef] begin
     using .CircRef
-    # Every exported configuration: the Julia text, normalized by stim (str(stim.Circuit(text))),
-    # equals the reference text; build records (records, detectors, targets, cost) agree.
+    # every stored configuration: our text, normalized by stim, equals the stored text, and the build
+    # records (records, detectors, targets, cost) agree
     counts = Dict{String,Int}()
     for rec in circ_configs()
         ok, msg = compare_config(rec)
@@ -299,9 +298,9 @@ end
     for d in (3, 5)
         @test graphlike(build(multi_patch_surgery(d, 3, "ZZ", [], d), 1e-3; eigen_targets=true).circuit) == d
     end
-    # test_hypergraph_search_agrees_on_distance_d3
+    # the hypergraph search finds the same distance (d = 3)
     @test stim_search(build(multi_patch_surgery(3, 2, "ZZ", [], 3), 1e-3; eigen_targets=true).circuit; max_dets=4, max_degree=4) == 3
-    # test_detectors_are_local (d = 5, 7)
+    # detectors stay local (d = 5, 7)
     for d in (5, 7), kind in ("ZZ", "XX"), term in ("conjugate", "same")
         c = build(multi_patch_surgery(d, 2, kind, [], 2, term), 1e-3; eigen_targets=true).circuit
         @test maximum(length(i.targets) for i in c.ops if i.name == "DETECTOR") <= 5

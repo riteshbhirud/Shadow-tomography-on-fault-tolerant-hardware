@@ -1,5 +1,6 @@
 # Circuit distance of the two-Xbar simultaneous gauging circuit at r = 6, with spectators.
-# Run: julia --project=. scripts/taskA_bb72_multi_distance.jl    Output: results/taskA_julia/bb72_multi_distance.json
+# Run: julia --project=. scripts/taskA_bb72_multi_distance.jl
+# Output: results/taskA_julia/bb72_multi_distance.json
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")

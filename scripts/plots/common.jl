@@ -1,5 +1,4 @@
-# Shared bits of the plotting scripts: the colours of the reference figures, and a recorder of the data handed to
-# every plot call (`--dump FILE` writes it as JSON, to check it against the data of the reference figures).
+# Shared plotting helpers: the series colours and a log of the data passed to each plot call (`--dump FILE` writes it as JSON).
 using CairoMakie, JSON
 
 const SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"]  # fixed categorical order
@@ -19,7 +18,7 @@ function rec!(kind; label=nothing, kw...)
     push!(PLOTLOG, d)
 end
 
-"""Save a figure and record it, so the dump has the same savefig markers as the reference dump."""
+"""Save a figure and add a savefig marker to the plot log."""
 function savefig(fig, path; px_per_unit=1)
     push!(PLOTLOG, Dict{String,Any}("kind" => "savefig", "name" => basename(path)))
     save(path, fig; px_per_unit)

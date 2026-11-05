@@ -1,6 +1,6 @@
-# Single-patch flip rates of the surface local settings and their rows of calibration_local.csv.
+# Single-patch flip rates of the surface local settings, as rows of calibration_local.csv.
 # Run: julia --project=. scripts/surface_local_calibration.jl [--d 3] [--workers 6] [--out FILE]
-# Default output: handover/data_julia/calibration_local_surface_d3.csv
+# Output: handover/data_julia/calibration_local_surface_d3.csv unless --out is given.
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")

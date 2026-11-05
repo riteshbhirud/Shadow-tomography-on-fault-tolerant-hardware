@@ -1,6 +1,4 @@
-# Sensitivity of the BB72 memory failure rate on Bravyi et al.'s circuit to the BP variant.
-# Paired comparison on the same samples:
-# Z-basis memory, N_c = 6, p = 3e-3, 3000 shots, one worker per variant.
+# Bravyi et al.'s BB72 memory circuit (Z basis, N_c = 6, p = 3e-3, 3000 shots) decoded with each BP variant on the same samples.
 # Run: julia --project=. scripts/calib_bravyi_decoder_sensitivity.jl [--workers 6]
 # Output: results/calibration_julia/bravyi_decoder_sensitivity.json
 const REPO = dirname(@__DIR__)
@@ -11,7 +9,7 @@ using Distributed, FTShadows
 argval(flag, default) = (i = findfirst(==(flag), ARGS); i === nothing ? default : ARGS[i+1])
 out = joinpath(REPO, "results", "calibration_julia", "bravyi_decoder_sensitivity.json")
 mkpath(dirname(out))
-# the reference uses one process per variant; --workers caps that
+# one process per variant unless --workers says otherwise
 wp = addprocs(parse(Int, argval("--workers", string(length(FTShadows.BRAVYI_SENS_VARIANTS))));
               exeflags = "--project=$(Base.active_project())")
 @everywhere wp using FTShadows

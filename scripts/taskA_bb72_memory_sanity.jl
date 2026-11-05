@@ -1,6 +1,4 @@
-# Decoder sanity for BB72: Z- and X-basis memory with our syndrome schedule, r = 6, p = 1e-3, Relay-BP.
-# Compared with Bravyi et al.'s ~7e-5
-# per cycle only to within a small factor (different schedule, noise and decoder).
+# BB72 Z / X memory with our syndrome schedule (r = 6, p = 1e-3, Relay-BP), to compare with Bravyi et al.'s ~7e-5 per cycle.
 # Run: julia --project=. scripts/taskA_bb72_memory_sanity.jl [BASES] [--workers 12]
 # Output: results/taskA_julia/bb72_memory_sanity.json
 const REPO = dirname(@__DIR__)

@@ -1,4 +1,4 @@
-# Detector error models: read from stim (bridged) into Julia, then turned into check/observable
+# Detector error models: read from stim into Julia, then turned into check/observable
 # matrices (hypergraph decoders) or graphlike edges (matching).
 
 """
@@ -71,8 +71,8 @@ function read_dem(dem::Py)
 end
 read_dem(text::AbstractString) = read_dem(pymodule(:stim).DetectorErrorModel(text))
 
-# Insertion-ordered map key => probability, merging repeats as independent mechanisms
-# (Python dicts keep insertion order; the decoders are built in that order).
+# Insertion-ordered map key => probability, merging repeats as independent mechanisms.
+# The decoders are built in this order.
 struct _MergedMechanisms{K}
     index::Dict{K,Int}
     keys::Vector{K}

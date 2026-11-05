@@ -1,4 +1,4 @@
-# run_oracle reproduces the reference runs (outcomes, raw, confidence, kinds, cost, meta), the hashed
+# run_oracle reproduces the stored runs (outcomes, raw, confidence, kinds, cost, meta), the hashed
 # snapshots in test/reference/snapshots/snapshots.json, and the records byte for byte.
 
 @testmodule OracleRef begin
@@ -6,7 +6,7 @@
     using FTShadows: pyjson
 
     const DIR = joinpath(dirname(@__DIR__), "test", "reference", "decode")
-    const SNAPSHOTS = joinpath(DIR, "..", "snapshots", "snapshots.json")  # hashed snapshots of the original implementation
+    const SNAPSHOTS = joinpath(DIR, "..", "snapshots", "snapshots.json")
 
     bits(rows, width) = isempty(rows) ? zeros(UInt8, 0, width) :
                         permutedims(reduce(hcat, [UInt8.(collect(r) .== '1') for r in rows]))
@@ -39,7 +39,7 @@
         return d, res
     end
 
-    """Field-by-field comparison with the reference result; returns a NamedTuple of booleans."""
+    """Field-by-field comparison with the stored result; returns a NamedTuple of booleans."""
     function check_case(name)
         d, res = run_case(name)
         nt = size(res.outcomes, 2)
@@ -60,7 +60,7 @@
     end
 end
 
-@testitem "oracle.run parity: surface snapshots and extra cases" tags = [:oracle] setup = [OracleRef] begin
+@testitem "run_oracle reproduces stored runs: surface snapshots and extra cases" tags = [:oracle] setup = [OracleRef] begin
     names = filter(n -> !occursin("bb", n), OracleRef.case_names())
     @test length(names) == 12
     for name in names
@@ -70,7 +70,7 @@ end
     end
 end
 
-@testitem "oracle.run parity: BB72 snapshots and Relay/BP-OSD runs" tags = [:oracle, :slow] setup = [OracleRef] begin
+@testitem "run_oracle reproduces stored runs: BB72 snapshots, Relay-BP and BP-OSD" tags = [:oracle, :slow] setup = [OracleRef] begin
     names = filter(n -> occursin("bb", n), OracleRef.case_names())
     @test length(names) == 8
     for name in names
@@ -80,7 +80,7 @@ end
     end
 end
 
-@testitem "records written by write_records_raw equal the reference bytes" tags = [:oracle] setup = [OracleRef] begin
+@testitem "write_records_raw output matches the stored bytes" tags = [:oracle] setup = [OracleRef] begin
     using SHA
     using FTShadows: write_records_raw
     d, res = OracleRef.run_case("snap_surface_XX_2p_d3_r1_conj_nan_gap")  # NaN confidences
@@ -108,7 +108,7 @@ end
 # On fresh seeds, q agrees with the stored result tables within sampling error (pooled
 # two-proportion z-tests, Holm over all rows). About 45 CPU-minutes, run on worker processes since
 # PythonCall is not thread-safe; set FTSHADOWS_STAT=1 to run it (FTSHADOWS_STAT_WORKERS, default 6).
-@testitem "oracle q agrees with the reference tables (statistical)" tags = [:oracle, :slow, :statistical] setup = [OracleRef] begin
+@testitem "oracle q agrees with the stored result tables (statistical)" tags = [:oracle, :slow, :statistical] setup = [OracleRef] begin
     using Distributed, JSON, Printf
     if get(ENV, "FTSHADOWS_STAT", "") != "1"
         @info "statistical gate skipped (set FTSHADOWS_STAT=1)"
@@ -172,7 +172,7 @@ end
     end
 end
 
-# Decoder properties (gap, confidences, PyMatching agreement) on the exported circuits.
+# Decoder properties (gap, confidences, PyMatching agreement) on the stored circuits.
 @testitem "oracle properties: surface" tags = [:oracle] setup = [OracleRef] begin
     using FTShadows: read_dem, graphlike_edges, llr, detector_error_model, pymodule
     using PythonCall, Statistics

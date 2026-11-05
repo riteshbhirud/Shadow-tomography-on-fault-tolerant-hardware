@@ -87,7 +87,7 @@ end
 """
     bb_families(code) -> (fam, auts, duals, folds, info)
 
-Named families, automorphisms, ZX-dualities and valid fold circuits of a BB code, in the reference order.
+Named families, automorphisms, ZX-dualities and valid fold circuits of a BB code.
 """
 function bb_families(code::StabilizerCode)
     l, m = code.meta[:l], code.meta[:m]
@@ -142,7 +142,7 @@ end
 """
     ENSEMBLES
 
-The names of the native ensembles that the Task B scripts build groups and shadow maps for.
+Names of the native ensembles that Task B builds groups and shadow maps for.
 """
 const ENSEMBLES = ["readout_only", "shifts", "ibm", "aut", "albert_two_fold", "aut_plus_all_folds"]
 
@@ -160,8 +160,8 @@ const ENSEMBLE_DESCRIPTIONS = OrderedDict(
 """
     build_ensembles(code) -> (ensembles, folds, info)
 
-Candidate generator elements of every ensemble, in the reference order (the order decides which generators the
-reduction keeps).
+Candidate generator elements of every ensemble. The order matters: it decides which generators the reduction
+keeps.
 """
 function build_ensembles(code::StabilizerCode)
     l, m = code.meta[:l], code.meta[:m]
@@ -188,8 +188,7 @@ end
 """
     all_elements(ensembles)
 
-The distinct `Element` objects over all ensembles, in first-seen order (the order of
- `pauli_corrections_<code>.json`).
+The distinct `Element` objects over all ensembles, in first-seen order.
 """
 function all_elements(ens::AbstractDict)
     seen = IdDict{Element,Nothing}()

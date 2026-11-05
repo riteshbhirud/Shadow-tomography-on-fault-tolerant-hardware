@@ -1,7 +1,7 @@
 # Physical Clifford layers as 2n × 2n symplectic matrices (v -> v F), and gate lists that can be replayed on
 # QuantumClifford tableaux to get the signs.
 #
-# Qubit indices in gate lists and permutations are 0-based, exactly as in the saved
+# Qubit indices in gate lists and permutations are 0-based, as in the saved
 # JSON files. "SWAPPERM" carries a whole permutation: the Pauli on qubit i moves to qubit perm[i].
 
 """
@@ -103,7 +103,7 @@ gates_x_diag(t) = [gates_h_all(size(t, 1)); gates_z_diag(t); gates_h_all(size(t,
 """
     gates_to_symplectic(gates, n)
 
-The symplectic matrix of a gate list, derived gate by gate (independent of how the list was built).
+The symplectic matrix of a gate list, built gate by gate.
 """
 function gates_to_symplectic(gates, n::Integer)
     f = GF2Mat(I(2n))
@@ -135,7 +135,7 @@ end
 """
     group_automorphisms(l, m)
 
-All automorphisms of Z_l × Z_m, as pairs (image of x, image of y), in the reference enumeration order.
+All automorphisms of Z_l × Z_m as pairs (image of x, image of y).
 """
 function group_automorphisms(l::Integer, m::Integer)
     elems = [(a, b) for a in 0:l-1 for b in 0:m-1]
@@ -205,8 +205,7 @@ end
 """
     expand_gates(gates)
 
-The gate list with every `:SWAPPERM` written as a SWAP network (one SWAP per transposition of each
-cycle).
+The gate list with every `:SWAPPERM` written out as SWAPs, one per transposition of each cycle.
 """
 function expand_gates(gates)
     out = Gate[]
@@ -308,8 +307,8 @@ end
 """
     pauli_correction(stabs, gates, n) -> (gates, c)
 
-A Pauli C (as X/Y/Z gates) such that C·U maps every stabilizer to +stabilizer, from ω(c, imgᵢ) = flipᵢ solved
-over GF(2) with the same particular solution as the reference.
+A Pauli C (as X/Y/Z gates) such that C·U maps every stabilizer to +stabilizer, from solving
+ω(c, imgᵢ) = flipᵢ over GF(2).
 """
 function pauli_correction(stabs::AbstractMatrix, gates, n::Integer)
     imgs, flip = stabilizer_sign_flips(stabs, gates, n)

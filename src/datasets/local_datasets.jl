@@ -1,12 +1,11 @@
-# The Nov-20 Bell / GHZ datasets: surface d = 3, 5 and
-# BB72 (local basis); fixed or random local Pauli settings; noiseless, or p = 1e-3 at r = 3, 6; optional
-# logical Z noise. Sampling and decoding go through `measure`'s path (`run_oracle`), with the reference's
-# seeds and chunks, so the records equal the stored ones.
+# The Nov-20 Bell / GHZ datasets: surface d = 3, 5 and BB72 (local basis), fixed or random local Pauli
+# settings, noiseless or p = 1e-3 at r = 3, 6, optional logical Z noise. Sampling and decoding go through
+# `run_oracle` with fixed seed_for keys and chunk sizes, so regenerating a dataset gives the same records.
 
 const FORMAT_VERSION = "1.1"
 const NOV20_STATES = Dict("bell" => [("XX", 0), ("ZZ", 0)], "ghz" => [("XXX", 0), ("ZZI", 0), ("IZZ", 0)])
 
-"""Strings over `letters` of length m in itertools.product order (last character fastest)."""
+"""Strings over `letters` of length m in lexicographic order (last character fastest)."""
 product_strings(letters, m) = [join(reverse(t)) for t in vec(collect(Iterators.product(fill(letters, m)...)))]
 
 """
@@ -70,8 +69,8 @@ end
 """
     nov20_draws(ds) -> (sids, draw, flags)
 
-Setting ids, the setting index of every shot, and the logical-noise flags. The random draws are numpy's
-`default_rng(seed)` streams, taken through the bridge.
+Setting ids, the setting index of every shot, and the logical-noise flags. Random draws use numpy's
+`default_rng(seed)`, the generator the stored datasets were drawn with.
 """
 function nov20_draws(ds)
     sids = product_strings("XYZ", ds["m"])
@@ -235,7 +234,7 @@ _od(ps...) = OrderedDict{String,Any}(ps...)
 """
     nov20_meta(ds, sids, records, costs, labels_of, flags, known, runtime; code_version, generator)
 
-The dataset's meta.json content (format v1.1 with the Nov-20 keys).
+The dataset's meta.json content (format v1.1).
 """
 function nov20_meta(ds, sids, records, costs, labels_of, flags, known, runtime; code_version = "unknown",
                     generator = "scripts/make_local_datasets.jl", created = Libc.strftime("%Y-%m-%d", time()))
@@ -321,8 +320,8 @@ end
 """
     generate_nov20(ds, dir; calibration, pmap=map, kw...) -> known answers
 
-Simulate one dataset spec and write its four files into `dir` (never the reference's handover/data).
-`calibration` is the rows of calibration_local.csv (`csv_rows`).
+Simulate one dataset spec and write its four files into `dir`. `calibration` is the rows of
+calibration_local.csv (`csv_rows`).
 """
 function generate_nov20(ds, dir::AbstractString; calibration, pmap = map, kw...)
     t0 = time()

@@ -1,10 +1,6 @@
-# Reproduce every Task B result (fixed seeds).
-# Steps: build the groups of BB72 and gross, the QuantumClifford sign check, the shadow maps
-# (with their plots), weight1_detail, designed_cover, lacross, basis_independence, then the Task B tests.
-# Run: julia --project=scripts/oscar scripts/taskb_run_all.jl [--no-tests] [--out DIR]   (default results/taskB_julia/)
-# The group orders need Oscar, a weak dependency of FTShadows, so the script runs in the small scripts/oscar
-# environment (FTShadows from this repository plus Oscar). The plots need the plotting environment:
-# julia --project=scripts/plots -e 'using Pkg; Pkg.instantiate()'.
+# Every Task B result (fixed seeds): groups, sign check, shadow maps and plots, covers, La-cross, basis independence, Task B tests.
+# Run: julia --project=scripts/oscar scripts/taskb_run_all.jl [--no-tests] [--out DIR]   (Oscar env; plots need scripts/plots)
+# Output: results/taskB_julia/ unless --out is given.
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")
@@ -16,7 +12,7 @@ const OUT = argval("--out", joinpath(REPO, "results", "taskB_julia"))
 const CODES = ("BB72", "gross")
 mkpath(OUT)
 
-# run one step with its printed output going to OUT/log as well, so each step keeps its log
+# run one step, its output going to OUT/log as well as stdout
 function step(f, title, log)
     println("+ ", title)
     t0 = time()
@@ -50,7 +46,7 @@ step("build_groups BB72 gross", "build_groups.log") do
     end
 end
 
-# the state-level sign check with QuantumClifford (the old julia/taskb_crosscheck.jl)
+# the state-level sign check with QuantumClifford
 step("QuantumClifford sign check", "julia_crosscheck.log") do
     ok = true
     for name in CODES

@@ -1,6 +1,6 @@
-# Flip rates of exactly the settings in the v1.0/v1.1 handover datasets, per string and per subset
-# product. Products need their own q because flips within one
-# setting are correlated. Inputs are +1 eigenstates of every measured string.
+# Flip rates of the settings used in the v1.0/v1.1 datasets, per string and per subset product. Products
+# need their own q because flips within one setting are correlated. Inputs are +1 eigenstates of every
+# measured string.
 
 const DATASET_SETTINGS_P, DATASET_SETTINGS_R = 1e-3, 3
 
@@ -52,7 +52,7 @@ function dataset_settings_job(job)
     flips = Int.(res.outcomes)  # eigenvalue +1 for every string -> outcome bit = flip
     n = size(flips, 1)
     m = length(labels)
-    # itertools.combinations order, sizes 1..m
+    # all subsets by size, lexicographic within a size
     subsets = [c for r in 1:m for c in _combinations(0:m-1, r)]
     m > 4 && filter!(s -> length(s) <= 2, subsets)  # BB72 readout: single strings, pairs and 'any'
     r = startswith(sid, "surgery") || startswith(sid, "gauge") ? DATASET_SETTINGS_R : 0
@@ -79,7 +79,7 @@ function dataset_settings_job(job)
     return rows
 end
 
-# itertools.combinations(xs, r) in its (lexicographic) order
+# size-r subsets of xs in lexicographic order
 function _combinations(xs, r)
     xs = collect(xs)
     r == 0 && return [Int[]]

@@ -1,6 +1,4 @@
-# handover/calibration_local.csv: the flip rates behind the noise-expected values of data/nov20/.
-# Joins results/taskA/surface_local_q.csv
-# and, if present, bb72_local_q.csv. To rerun the surface simulation itself use surface_local_calibration.jl.
+# calibration_local.csv: the flip rates behind the noise-expected values of the Nov-20 datasets, joined from results/taskA.
 # Run: julia --project=. scripts/make_calibration_local.jl [OUT]   (default handover/data_julia/calibration_local.csv)
 const REPO = dirname(@__DIR__)
 using FTShadows

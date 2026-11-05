@@ -1,6 +1,5 @@
-# measure() and run_oracle on Julia-built circuits reproduce the reference results bit for bit
-# (test/reference/measure, exported from the original implementation, and the snapshot runs of
-# test/reference/decode/oracle).
+# measure() and run_oracle reproduce the stored results bit for bit (test/reference/measure and the
+# snapshot runs in test/reference/decode/oracle).
 
 @testmodule MeasureRef begin
     using FTShadows, JSON, SHA
@@ -12,7 +11,7 @@
     same(a::Float64, b::Float64) = (isnan(a) && isnan(b)) || a === b
     records_text(res) = join(pyjson(r; separators = (",", ":")) * "\n" for r in records(res))
 
-    """Field-by-field comparison of a result with an exported reference result."""
+    """Field-by-field comparison of a result with a stored one."""
     function compare(res::OracleResult, d)
         nt = size(res.outcomes, 2)
         conf = parse.(Float64, d["confidence"])
@@ -36,7 +35,7 @@
     end
 end
 
-@testitem "measure equals plugins.measure: surface code" tags = [:oracle, :circuits] setup = [MeasureRef] begin
+@testitem "measure reproduces stored results: surface code" tags = [:oracle, :circuits] setup = [MeasureRef] begin
     names = filter(startswith("surface"), MeasureRef.case_names())
     @test length(names) == 8
     for name in names
@@ -46,7 +45,7 @@ end
     end
 end
 
-@testitem "measure equals plugins.measure: BB72" tags = [:oracle, :circuits, :slow] setup = [MeasureRef] begin
+@testitem "measure reproduces stored results: BB72" tags = [:oracle, :circuits, :slow] setup = [MeasureRef] begin
     names = filter(startswith("bb72"), MeasureRef.case_names())
     @test length(names) == 9
     for name in names
@@ -70,7 +69,7 @@ end
     @test a.outcomes == b.outcomes
 end
 
-@testitem "run_oracle on Julia-built snapshot circuits equals the reference runs" tags = [:oracle, :circuits] setup = [MeasureRef, OracleRef] begin
+@testitem "run_oracle on the snapshot circuits reproduces the stored runs" tags = [:oracle, :circuits] setup = [MeasureRef, OracleRef] begin
     using JSON
     using FTShadows.Circuits: single_patch_readout, multi_patch_surgery, setting_experiment, bb_gauging,
                               bb72_readout_experiment

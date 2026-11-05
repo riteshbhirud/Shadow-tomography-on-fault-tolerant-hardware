@@ -1,6 +1,6 @@
-# Handover files (the setting-cost table, the calibration tables, the v1 and Nov-20 datasets, the basis and
-# native-ensemble exports) and the calibration, verification and postselection studies behind results/.
-# Scripts in scripts/ run them; output goes to new folders, never handover/data.
+# Dataset tables (setting costs, calibration tables, the v1 and Nov-20 datasets, the basis and native-ensemble
+# exports) and the calibration, verification and postselection studies behind results/. The scripts in
+# scripts/ run them and write to new folders.
 
 using OrderedCollections: OrderedDict
 using Printf: @sprintf

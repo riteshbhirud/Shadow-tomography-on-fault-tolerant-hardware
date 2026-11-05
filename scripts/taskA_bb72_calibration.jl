@@ -1,9 +1,6 @@
-# BB72 gauging q(r) for a single logical X, Z, Y.
-# q(r) = P(decoded outcome != eigenvalue) on +1 eigenstates, plain Relay-BP; state independence on -1
-# eigenstates. --small-graphs: X and Z with the smaller 6-edge graphs (output bb72_qr_E6.csv).
-# Chunks are cached in results/taskA_julia/bb72_qr_chunks*/ (same .npz files as the reference), so a run resumes.
+# BB72 gauging flip rate q(r) for a single logical X, Z, Y with plain Relay-BP (+1 eigenstates, -1 for state independence).
 # Run: julia --project=. scripts/taskA_bb72_calibration.jl [--quick] [--small-graphs] [--workers 12]
-# Output: results/taskA_julia/bb72_qr.csv
+# Output: results/taskA_julia/bb72_qr.csv (bb72_qr_E6.csv with --small-graphs); resumes from bb72_qr_chunks*/
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")
@@ -13,7 +10,7 @@ const OUT = joinpath(REPO, "results", "taskA_julia")
 const CHUNK = 5000
 
 argval(flag, default) = (i = findfirst(==(flag), ARGS); i === nothing ? default : ARGS[i+1])
-quick, small = "--quick" in ARGS, "--small-graphs" in ARGS
+quick, small = "--quick" in ARGS, "--small-graphs" in ARGS  # --small-graphs: X and Z with the 6-edge graphs
 target, mx = quick ? (30, 3e4) : (200, 6e4)
 t = time()
 ps = small ? "XZ" : "XZY"

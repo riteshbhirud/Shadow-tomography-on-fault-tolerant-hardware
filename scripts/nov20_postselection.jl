@@ -1,9 +1,6 @@
-# Postselection on the decoder gap for every noisy Nov-20 dataset, a check of our data.
-# For gap cuts at quantiles 0-0.5: per-setting kept
-# fraction and flip rate of stabilizer-group elements, and the fidelity estimate with lambda recomputed
-# from the kept setting frequencies. The summary figure is drawn with matplotlib through the bridge, with
-# the reference's calls, so it is the same figure.
-# Run: julia --project=. scripts/nov20_postselection.jl    Output: results/postselection_julia/
+# Decoder-gap postselection on every noisy Nov-20 dataset: kept fraction, flip rates and fidelity estimate per gap cut.
+# Run: julia --project=. scripts/nov20_postselection.jl
+# Output: results/postselection_julia/
 const REPO = dirname(@__DIR__)
 get!(ENV, "JULIA_PYTHONCALL_EXE", joinpath(REPO, ".venv", "bin", "python"))
 get!(ENV, "JULIA_CONDAPKG_BACKEND", "Null")
@@ -19,7 +16,7 @@ prefixes = sort([joinpath(data, f[1:end-length(".meta.json")]) for f in readdir(
 mpl = pyimport("matplotlib")
 mpl.use("Agg")
 plt = pyimport("matplotlib.pyplot")
-arr(x) = pyimport("numpy").array(x)  # matplotlib gets numpy arrays, as from the pandas columns
+arr(x) = pyimport("numpy").array(x)  # matplotlib gets numpy arrays
 fig, axes = plt.subplots(1, 2; figsize = (11, 4.2))
 for prefix in prefixes
     name = basename(prefix)
@@ -32,7 +29,7 @@ for prefix in prefixes
     end
     flush(stdout)
     if occursin("random", name) && !occursin("logical", name)
-        # kept shots and flips summed per cut (pandas groupby("cut"), cuts ascending)
+        # kept shots and flips summed per cut, cuts ascending
         cuts = sort(unique(r["cut"] for r in rows))
         fk = [sum(r["shots_kept"] for r in rows if r["cut"] == c) for c in cuts]
         fl = [sum(r["flips"] for r in rows if r["cut"] == c) for c in cuts]

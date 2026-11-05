@@ -95,8 +95,8 @@ end
 """
     write_prep_vs_measure(path, rows)
 
-Write the rows as pandas' `DataFrame(rows).to_csv(index=False)` does: the volume and ratio columns hold
-`None` in some rows, so pandas makes them float columns (`260.0`, missing values empty).
+Write the rows as CSV in pandas format. The volume and ratio columns have missing values, so they are
+float columns (`260.0`, missing empty).
 """
 function write_prep_vs_measure(path::AbstractString, rows)
     floatcols = ("prep_volume", "measure_volume", "ratio_measure_over_total")

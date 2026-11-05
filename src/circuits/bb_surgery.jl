@@ -1,6 +1,5 @@
 # Single-logical measurements on BB codes by gauging.
-# `bb_setup` fixes the logical basis shared by every BB72 oracle setting
-# (handover/bases/bb72_oracle_basis.json).
+# `bb_setup` fixes the logical basis shared by every BB72 oracle setting.
 
 """Qubit permutation (0-based images) of the shift automorphism x^a y^b on both blocks."""
 function shift_perm(code::BBCode, a::Integer, b::Integer)
@@ -36,9 +35,8 @@ Code, measured logicals and common logical basis: weight-6 X and Z logicals over
 once with minimal union are (Xbar_0, Zbar_0), and Ybar_0 is their phase-free product. Returns a
 named tuple `(code, L, bases, basis, weights, Ypair, min_weight_found)`.
 
-The starting low-weight logicals come from a seeded random search (stored in
-`data/python_rng.json`); the orbit
-search and basis completion are recomputed.
+The starting low-weight logicals come from a seeded random search and are read from
+`data/python_rng.json`. The orbit search and basis completion are done here.
 """
 function bb_setup(name::AbstractString="bb72")
     get!(_BB_SETUP, name) do

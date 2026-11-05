@@ -45,8 +45,6 @@ handover/
 docs/build/
 docs/Manifest.toml
 
-# Local copy of the original Python code, used by the :pyref tests only
-reference/
 test/Manifest.toml
 .CondaPkg/
 test/.CondaPkg/

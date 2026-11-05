@@ -1,13 +1,13 @@
 # Bravyi et al.'s BB72 memory logical error rate (arXiv:2308.07915) on their circuit, with their BP-OSD
-# settings and with Relay-BP, and the sensitivity of the failure
-# rate to the BP variant. ldpc and Relay-BP are bridged.
+# settings and with Relay-BP, and the sensitivity of the failure rate to the BP variant. ldpc and Relay-BP
+# are called through PythonCall.
 
 const BRAVYI_NC = 6
 const BRAVYI_CHUNK = 2000
 const BRAVYI_FIT = (11.09, 365.6, -16088)
 
-# Python's float ** calls the C library's pow; Julia's own `^` can differ in the last bit. The exp in the
-# fit is numpy's (its SIMD loop differs from the C library on x86 Linux).
+# pow from the C library and exp from numpy, so the fit values match the stored ones on every platform
+# (Julia's `^` and numpy's SIMD exp can differ in the last bit).
 _cpow(x::Float64, y::Float64) = @ccall pow(x::Float64, y::Float64)::Float64
 
 """The paper's fit pL(p) = p^3 exp(c0 + c1 p + c2 p^2)."""
@@ -16,7 +16,7 @@ bravyi_fit_pl(p::Float64) = _cpow(p, 3.0) * pyconvert(Float64, pymodule(:numpy).
 """32-bit seed of chunk `chunk` of a configuration tag (SHA-256 of "tag|chunk", first 4 bytes little-endian)."""
 bravyi_seed(tag::AbstractString, chunk::Integer) = Int(ltoh(reinterpret(UInt32, sha256("$tag|$chunk")[1:4])[1]))
 
-"""`(p, basis, decoder)` as the reference writes it in tags and file names (Python's str of the float)."""
+"""`(p, basis, decoder)` as written in tags and chunk file names (floats as Python's str)."""
 bravyi_key(k) = "$(pyfloat(Float64(k[1])))_$(k[2])_$(k[3])"
 bravyi_tag(k, scaling) = "bravyi|$(pyfloat(Float64(k[1])))|$(k[2])|$(k[3])|$(pyfloat(Float64(scaling)))"
 
@@ -61,7 +61,7 @@ function bravyi_work(p::Float64, basis::AbstractString, decoder::AbstractString,
     return count(s -> any(pred[:, s] .!= obs[s, :]), 1:size(det, 1))
 end
 
-"""The 12 configurations (p, basis, decoder) in the reference's order."""
+"""The 12 configurations (p, basis, decoder), BP-OSD first."""
 bravyi_configs() = [(p, string(b), dec) for dec in ("bposd", "relay") for p in (1e-3, 2e-3, 3e-3) for b in "ZX"]
 
 """(fails, shots) summed over the finished chunk files of configuration `k`."""
@@ -79,7 +79,7 @@ end
 
 _claimed(chunk_dir, k) = count(f -> startswith(f, bravyi_key(k) * "_c") && endswith(f, ".claim"), readdir(chunk_dir))
 
-# Create `path` only if it does not exist yet (Python's open(path, "x")); false if it does.
+# Create `path` only if it does not exist yet; false if it does.
 function _claim(path::AbstractString)
     fl = Base.Filesystem.JL_O_WRONLY | Base.Filesystem.JL_O_CREAT | Base.Filesystem.JL_O_EXCL
     try
@@ -158,7 +158,7 @@ const BRAVYI_SENS_VARIANTS = [("ms", 1.0), ("ms", 0.9), ("ms", 0.75), ("ms", 0.6
     bravyi_sensitivity(v) -> OrderedDict
 
 Failures of one BP-OSD variant `v = (method, scaling)` ("ms" min-sum with scaling, "ps" product-sum) on
-the same 3000 Z-memory shots at p = 3e-3, with the per-shot failure vector packed as `np.packbits`.
+the same 3000 Z-memory shots at p = 3e-3, with the per-shot failure vector packed by `packbits`.
 """
 function bravyi_sensitivity(v)
     method, sf = v
@@ -181,6 +181,6 @@ function bravyi_sensitivity(v)
                                    "shots" => BRAVYI_SENS_SHOTS, "fail_vec" => packbits(fails))
 end
 
-"""`np.packbits` of a Bool vector: 8 per byte, most significant bit first, zero-padded."""
+"""Bool vector packed 8 per byte, most significant bit first, zero-padded (as `np.packbits`)."""
 packbits(b::AbstractVector{Bool}) = [sum(b[i+j] << (7 - j) for j in 0:7 if i + j <= length(b); init = 0)
                                      for i in 1:8:length(b)]

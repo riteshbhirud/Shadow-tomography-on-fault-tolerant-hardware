@@ -1,6 +1,6 @@
-# Where the scripts read their inputs. The Julia scripts write next to the stored reference outputs
-# (results/X_julia/, handover/data_julia/) so the two can be compared; a later script reads each input
-# from the Julia folder once an earlier Julia script has written it, and from the stored folder before.
+# Where the scripts read their inputs. Scripts write to results/X_julia/ and handover/data_julia/,
+# next to the stored outputs. A later script reads each input from the Julia folder if an earlier
+# script has written it there, otherwise from the stored folder.
 
 """
     upstream(repo, parts...) -> path
