@@ -25,11 +25,7 @@ include("physops.jl")
 include("ensembles.jl")
 include("groups.jl")
 include("shadow.jl")
-include("designed_cover.jl")
-include("basis_independence.jl")
 include("lacross.jl")
-include("build_groups.jl")
 include("bruteforce.jl")
-include("outputs.jl")
 
 end

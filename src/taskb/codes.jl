@@ -281,7 +281,7 @@ end
 
 Bravyi-style block basis for given f and (g, h): pick monomial shifts greedily so each block has rank k/2,
 then rotate the Z̄ so that X̄ Z̄ᵀ = I. The f, g, h come from a seeded random search (numpy RNG) and are read
-from `test/reference/taskb/rng_inputs.json`.
+from `src/taskb/data/rng_inputs.json`.
 """
 function fgh_basis_from(ring::BBRing, a, b, f, g, h)
     N = ring_size(ring)
@@ -321,14 +321,14 @@ function fgh_basis_from(ring::BBRing, a, b, f, g, h)
     return xl, zl, info
 end
 
-const TASKB_REFDIR = joinpath(dirname(dirname(@__DIR__)), "test", "reference", "taskb")
+const TASKB_DATA = joinpath(@__DIR__, "data")
 
 """
     rng_inputs()
 
 The stored outputs of the seeded f, g, h search.
 """
-rng_inputs() = JSON.parsefile(joinpath(TASKB_REFDIR, "rng_inputs.json"))
+rng_inputs() = JSON.parsefile(joinpath(TASKB_DATA, "rng_inputs.json"))
 
 """
     bb72_fgh_search(seed)

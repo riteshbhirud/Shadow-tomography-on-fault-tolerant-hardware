@@ -31,4 +31,4 @@ julia --project=. -e 'using Pkg; Pkg.instantiate()'
 
 `JULIA_PYTHONCALL_EXE` points PythonCall to this interpreter, and `JULIA_CONDAPKG_BACKEND=Null` stops CondaPkg from installing its own Python, which would pick different numpy versions (numpy's random streams depend on the version).
 
-The test suite, the scripts in `scripts/` that call Python, and `docs/make.jl` set both variables to `.venv/bin/python` when they are not set. In an interactive session, set them before `using FTShadows`.
+The test suite and `docs/make.jl` set both variables to `.venv/bin/python` when they are not set. In an interactive session, set them before `using FTShadows`.

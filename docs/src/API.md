@@ -36,8 +36,6 @@ FTShadows.write_records_raw
 FTShadows.read_records_raw
 FTShadows.read_meta
 FTShadows.pyjson
-FTShadows.generate_nov20
-FTShadows.nov20_datasets
 FTShadows.Dem
 FTShadows.Circuits.min_weight_codeword
 FTShadows.TaskB.ENSEMBLES

@@ -72,14 +72,13 @@ For comparison, random single-qubit Pauli measurements have ``\|P\|^2 = 3^{|P|}`
 
 ## Group orders
 
-[`group_order`](@ref) and [`reduce_generators`](@ref) need Oscar. They are implemented in the package extension `FTShadowsOscarExt`, which loads with `using Oscar`. Oscar is not a dependency of the main environment; the Task B scripts run in the small `scripts/oscar` environment:
+[`group_order`](@ref) and [`reduce_generators`](@ref) need Oscar. They live in the package extension `FTShadowsOscarExt`, which loads when Oscar is loaded. Oscar is not a dependency of FTShadows, so add it to your own environment:
 
-```bash
-julia --project=scripts/oscar -e 'using Pkg; Pkg.instantiate()'
-julia --project=scripts/oscar scripts/taskb_run_all.jl
+```julia
+using FTShadows, Oscar
+import FTShadows.TaskB as TB
+TB.group_order([e.logical for e in ens["aut"]], 24)   # 2k × 2k logical actions, k = 12
 ```
-
-`taskb_run_all.jl` builds the groups of BB72 and the gross code, checks every kept generator against a QuantumClifford tableau simulation with signs, computes the shadow maps with [`shadow_map`](@ref), and runs the La-cross and basis-independence studies.
 
 ## La-cross codes
 

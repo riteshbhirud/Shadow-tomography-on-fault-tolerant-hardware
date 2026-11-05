@@ -41,7 +41,6 @@ makedocs(;
             "Conventions" => "conventions.md",
         ],
         "Native Clifford ensembles (Task B)" => "taskb.md",
-        "Reproducing results" => "reproducing.md",
         "Python dependencies" => "python.md",
         "API" => "API.md",
         "References" => "references.md",

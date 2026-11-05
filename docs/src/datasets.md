@@ -14,7 +14,7 @@ A dataset is a set of files with a common prefix. It holds the shots of one ense
 | `<name>.meta.json` | run-level metadata: code, noise, ensemble, seeds, and for test datasets the prepared state and known answers | `FTShadows.read_meta`, or `load_dataset(prefix).meta` |
 | `<name>.records.jsonl` | one shot per line, in draw order | [`load_records`](@ref) |
 | `<name>.exact.csv` | every logical Pauli the ensemble can estimate, with its exact value, ``\lambda_P`` and the settings that measure it | [`load_exact`](@ref) |
-| `<name>.expected.csv` | local-setting datasets only: exact, after-logical-noise and noise-expected values | `FTShadows.csv_rows` |
+| `<name>.expected.csv` | local-setting datasets only: exact, after-logical-noise and noise-expected values | any CSV reader |
 
 [`load_dataset`](@ref) reads the first three and returns a named tuple `(; meta, records, exact)`. It does not read `expected.csv`.
 
@@ -121,11 +121,10 @@ ka = bb.meta["known_answers"]
 ka["fidelity_ideal"], ka["fidelity_expected_noisy"]
 ```
 
-`expected.csv` holds, for every Pauli, the value it should have under the calibrated flip rates, with columns `pauli`, `weight`, `exact`, `exact_with_logical_noise`, `expected_noisy`, `expected_noisy_se`, `lambda_P`, `settings` and `q_mean`. `FTShadows.csv_rows` reads it into one dict per row:
+`expected.csv` holds, for every Pauli, the value it should have under the calibrated flip rates, with columns `pauli`, `weight`, `exact`, `exact_with_logical_noise`, `expected_noisy`, `expected_noisy_se`, `lambda_P`, `settings` and `q_mean`:
 
 ```@example datasets
-rows = FTShadows.csv_rows(joinpath(dir, "bb72_bell_fixed_p0.expected.csv"))
-only(filter(r -> r["pauli"] == "YY", rows))
+foreach(println, first(eachline(joinpath(dir, "bb72_bell_fixed_p0.expected.csv")), 3))
 ```
 
 ## Writing records
@@ -133,7 +132,8 @@ only(filter(r -> r["pauli"] == "YY", rows))
 [`records`](@ref) does not produce the dataset format (see the warning in [Measuring logical settings](@ref manual)). To make files that [`load_records`](@ref) and [`local_view`](@ref) read, write the dataset fields yourself:
 
 ```@example datasets
-using FTShadows: OrderedDict, write_records_raw
+using FTShadows: write_records_raw
+using OrderedCollections: OrderedDict
 
 function dataset_records(res, setting_id; first_shot = 0)
     map(1:size(res.outcomes, 1)) do s
@@ -156,22 +156,3 @@ mine = local_view(load_records(path))
 ```
 
 Use a different seed for every call: two calls with the same seed and the same circuit give the same noise realisation.
-
-## Generating datasets
-
-The local-setting datasets are made by `FTShadows.generate_nov20(spec, dir; calibration)`, which writes all four files. `FTShadows.nov20_datasets()` returns the specs of the stored datasets. A spec is a dict with the keys `name`, `code` (`"surface"` or `"bb72"`), `d` (`nothing` for BB72), `state` (`"bell"` or `"ghz"`), `m` (number of logical qubits), `p`, `r` (memory rounds on the surface code, gauging rounds on BB72), `kind` (`"random"` for i.i.d. setting draws or `"fixed"` for blocks), `shots` (per setting for `fixed`, in total for `random`), `pL`, and `pL_qubit` when `pL > 0`. `calibration` is the rows of the flip-rate table used for the noise-expected values; a noiseless spec needs none.
-
-```@example datasets
-spec = Dict{String,Any}("name" => "tiny_bell", "code" => "surface", "d" => 3, "state" => "bell", "m" => 2,
-                        "p" => 0.0, "r" => 0, "kind" => "fixed", "shots" => 20, "pL" => 0.0)
-out = mktempdir()
-known = FTShadows.generate_nov20(spec, out; calibration = [])
-readdir(out)
-```
-
-```@example datasets
-tiny = load_dataset(joinpath(out, "tiny_bell"))
-length(tiny.records), known["fidelity_ideal"]
-```
-
-With `pL > 0`, a logical Z on qubit `pL_qubit` is applied to the prepared state with probability `pL` per shot, and `exact_with_logical_noise` accounts for it.

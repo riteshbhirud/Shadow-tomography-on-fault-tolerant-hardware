@@ -10,18 +10,13 @@ using PythonCall
 
 include("bridge.jl")
 include("records.jl")
-include("paths.jl")
 include("circuits/Circuits.jl")
 include("seeds.jl")
 include("stats.jl")
 include("decode/Decode.jl")
 include("oracle.jl")
 include("measure.jl")
-include("datasets/datasets.jl")
-include("reference_estimator.jl")
-include("bb72/bb72.jl")
 include("taskb/TaskB.jl")
-include("lacross_scan.jl")
 
 export seed_for, wilson, two_proportion_test, holm
 export MatchingGapDecoder, BPOSDGapDecoder, RelayGapDecoder, RelayAnchoredGapDecoder, decode, CONF_KINDS, DECODERS

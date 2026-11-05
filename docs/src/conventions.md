@@ -58,12 +58,9 @@ See [Costs](@ref costs). For surface `local` settings, rounds and circuit layers
 ## Seeds
 
 - `measure(...; seed)` (default 0) seeds stim's sampler. The same circuit, p and seed give the same shots. Relay-BP decoders are rebuilt on every call, so a BB72 call is reproducible as a whole.
-- The scripts and generators derive seeds with [`seed_for`](@ref): the SHA-256 of the parts joined by `|`, with the first 4 bytes read as a little-endian `UInt32`. Every configuration and chunk gets its own seed. The parts are written as Python `repr`s, so that strings, numbers and tuples have one fixed text form.
+- [`seed_for`](@ref) derives a seed from a list of parts: the SHA-256 of the parts joined by `|`, with the first 4 bytes read as a little-endian `UInt32`. The parts are written as Python `repr`s, so strings, numbers and tuples have one fixed text form. The stored datasets use one seed per configuration and chunk.
 
 ```@example conventions
 using FTShadows
 seed_for("nov20_draws", "bb72_bell_random_p1e-3_r3")
 ```
-
-- Random setting draws and logical-noise flags come from numpy's `default_rng`, through the bridge.
-- The shots of one setting of a local-setting dataset are simulated in chunks (10,000 shots on the surface code, 100 on BB72), each with `seed_for("nov20", name, bases, flagged, chunk)`.

@@ -231,49 +231,6 @@ end
     @test all(r.confidence .>= 0)
 end
 
-@testitem "day 3: logical channel and known answers" tags = [:properties] begin
-    using FTShadows: NOV20_STATES, flipped_state, nov20_expectations, product_strings
-    @test flipped_state(NOV20_STATES["bell"], 0) == [("XX", 1), ("ZZ", 0)]
-    sids = product_strings("XYZ", 2)
-    ds = Dict{String,Any}("code" => "surface", "d" => 3, "state" => "bell", "m" => 2, "p" => 0.0, "r" => 0,
-                          "pL" => 0.05, "pL_qubit" => 0)
-    rows, known = nov20_expectations(ds, sids, [])
-    @test known["fidelity_ideal"] == 1.0
-    @test abs(known["fidelity_with_logical_noise"] - 0.95) < 1e-12
-    by = Dict(r["pauli"] => r for r in rows)
-    @test by["YY"]["exact"] == -1 && abs(by["YY"]["exact_with_logical_noise"] + 0.9) < 1e-12
-    @test by["XX"]["lambda_P"] ≈ 1 / 9 && by["XI"]["lambda_P"] ≈ 1 / 3
-end
-
-@testitem "day 3: the handover example runs clean" tags = [:properties, :handover] begin
-    using FTShadows: generate_nov20, csv_rows, load_dataset
-    using JSON
-    # generate a dataset with generate_nov20, then run the example that estimates the fidelity.
-    # Skipped when handover/ (not part of the repository) is absent.
-    repo = pkgdir(FTShadows)
-    ex = joinpath(repo, "handover", "examples", "bell_fidelity.jl")
-    cal = joinpath(repo, "handover", "calibration_local.csv")
-    if !(isfile(ex) && isfile(cal))
-        @info "skipping: handover/examples not found"
-    else
-        spec = Dict{String,Any}("name" => "example_surface_d3_bell_random", "code" => "surface", "d" => 3,
-                                "state" => "bell", "m" => 2, "p" => 1e-3, "r" => 3, "kind" => "random",
-                                "shots" => 2000, "pL" => 0.0)
-        mktempdir() do out
-            generate_nov20(spec, out; calibration=csv_rows(cal))
-            meta = JSON.parsefile(joinpath(out, "example_surface_d3_bell_random.meta.json"))
-            @test meta["format_version"] == "1.1" && meta["draws"] == 2000
-            julia = joinpath(Sys.BINDIR, Base.julia_exename())
-            cmd = Cmd(`$julia --project=. ../examples/bell_fidelity.jl $(joinpath(out, "example_surface_d3_bell_random"))`;
-                      dir=joinpath(repo, "handover", "julia"))
-            txt = read(cmd, String)  # throws if the example exits with an error
-            F = parse(Float64, split(split(txt, "F = ")[2])[1])
-            se = parse(Float64, split(split(txt, "±")[2])[1])
-            @test abs(F - meta["known_answers"]["fidelity_expected_noisy"]) < 4se
-        end
-    end
-end
-
 @testitem "surface: gap decoder consistent with PyMatching (r = 3)" tags = [:properties, :bridge] begin
     using PythonCall, Statistics
     using FTShadows.Circuits: multi_patch_surgery, build, pycircuit

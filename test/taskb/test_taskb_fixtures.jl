@@ -1,5 +1,4 @@
-# Fast checks against the small tracked fixtures in test/reference/taskb. They need neither results/taskB
-# nor Oscar.
+# Fast checks against the small fixtures in test/reference/taskb. They do not need Oscar.
 
 @testitem "TaskB fixtures: GF(2) routines match stored results" setup = [TaskBRef] begin
     import FTShadows.TaskB as TB
@@ -41,17 +40,6 @@ end
     end
 end
 
-@testitem "TaskB fixtures: random CSS bases are valid" begin
-    import FTShadows.TaskB as TB
-    for name in ("BB72", "gross")
-        code0 = TB.make_bb_code(name, "fgh")
-        for s in 0:4
-            c = TB.random_css_basis(code0, s)
-            @test TB.is_css_basis(c)
-        end
-    end
-end
-
 @testitem "TaskB fixtures: toy shadow channels match stored values" setup = [TaskBRef] begin
     import FTShadows.TaskB as TB
     for (name, d) in TaskBRef.small_refs()["toy_lambda"]
@@ -78,21 +66,6 @@ end
         lz, lx, _, _ = TB.channel_for_group([e.logical for e in ens[ename]], 12)
         @test TaskBRef.same((0.5 .* (lz .+ lx))[idx], lam_ref[ename])
     end
-end
-
-@testitem "TaskB fixtures: designed-cover draws decode" begin
-    import FTShadows.TaskB as TB
-    for name in ("BB72", "gross")
-        r = TB.cover_draws(name)
-        @test length(r.trits) ÷ 12 >= 28000 && all(<(3), r.trits)
-        @test length(r.walk) == 5 * 6200 && r.pool == 10
-        @test all(1:length(r.walk)) do _
-            i, j, _ = TB._next_step!(r)
-            i != j && 1 <= i <= 10 && 1 <= j <= 10
-        end
-    end
-    # first setting of numpy's default_rng(7).integers(0, 3, 12)
-    @test TB._next_setting!(TB.cover_draws("BB72"), 12) == [2, 1, 2, 2, 1, 2, 2, 0, 0, 0, 0, 2]
 end
 
 @testitem "TaskB fixtures: the record comparison is strict" setup = [TaskBRef] begin

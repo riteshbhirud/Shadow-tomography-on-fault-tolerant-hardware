@@ -307,7 +307,7 @@ end
         pycircuit(c).detector_error_model(; decompose_errors=true)
     end
     @test graphlike(build(multi_patch_surgery(7, 2, "ZZ", [], 7), 1e-3; eigen_targets=true).circuit) == 7
-    # Gidney Y measurement (results/taskA/surface_y_verify.json)
+    # Gidney Y measurement: distance d needs b = 1, 2, 4 boundary rounds at d = 3, 5, 7
     for (d, b, expect, dets) in ((3, 1, 3, 29), (5, 2, 5, 110), (5, 1, 4, nothing), (7, 3, 6, nothing), (7, 4, 7, 315))
         e, _ = surface_local_experiment(d, "Y", [("Y", 0)]; boundary_rounds=b)
         r = build(e, 1e-3; eigen_targets=true)
@@ -319,9 +319,8 @@ end
 @testitem "circuit distances: BB72 gauging (r = 6, measured logicals)" tags = [:circuits, :bridge, :slow, :distance] setup = [CircRef] begin
     using .CircRef
     using FTShadows.Circuits: stim_search
-    # results/taskA/bb72_distances.json (circuit_distance_L_only) and bb72_local_distance.json. Each search
-    # takes minutes and several GB, so they run one at a time; the other entries of those files (all
-    # spectator targets, small graphs, every local combination) follow from the text identity checked above.
+    # Each search takes minutes and several GB of memory, so only these three run here; the other
+    # gauging circuits (spectators, local combinations) are covered by the stored-circuit identity above.
     for P in "XZY"
         @test stim_search(build(bb_gauging(P, 6; state_kind="+1"), 1e-3; eigen_targets=true).circuit) == 6
         GC.gc()

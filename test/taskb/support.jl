@@ -1,31 +1,7 @@
-# Helpers for the Task B tests: exact comparison with the stored results in results/taskB.
+# Helpers for the Task B fixture tests.
 @testmodule TaskBRef begin
     using FTShadows, JSON
     import FTShadows.TaskB as TB
-    const RESULTS = joinpath(pkgdir(FTShadows), "results", "taskB")
-
-    """Whether results/taskB is present (it is local, not tracked)."""
-    has_results() = isdir(RESULTS)
-
-    function skip_message(what)
-        @info "results/taskB not found: skipping the check of $what"
-        return nothing
-    end
-
-    """Read a 1-D little-endian .npy file (the λ_mix tables)."""
-    function read_npy(path)
-        open(path) do io
-            magic = read(io, 6)
-            magic == UInt8[0x93, 'N', 'U', 'M', 'P', 'Y'] || error("not an npy file")
-            major = read(io, UInt8); read(io, UInt8)
-            hlen = major == 1 ? Int(read(io, UInt16)) : Int(read(io, UInt32))
-            header = String(read(io, hlen))
-            occursin("'descr': '<f4'", header) || error("expected float32: $header")
-            occursin("'fortran_order': False", header) || error("expected C order")
-            n = parse(Int, match(r"'shape': \((\d+),\)", header)[1])
-            return ltoh.(read!(io, Vector{Float32}(undef, n)))
-        end
-    end
 
     """
         same(julia, stored) -> Bool
@@ -66,50 +42,9 @@
         end
     end
 
-    """
-        csv_matches(rows, columns, path)
-
-    Whether a stored CSV equals the Julia rows cell by cell: floats are compared bitwise after parsing,
-    integers and strings as text, booleans as True/False.
-    """
-    function csv_matches(rows, path)
-        lines = split(chomp(replace(read(path, String), "\r\n" => "\n")), "\n")
-        header = split(lines[1], ",")
-        length(lines) - 1 == length(rows) || (@warn "row count" length(lines) - 1 length(rows); return false)
-        for (row, line) in zip(rows, lines[2:end])
-            cells = split(line, ",")
-            Set(keys(row)) == Set(header) || (@warn "columns differ" header keys(row); return false)
-            for (col, cell) in zip(header, cells)
-                v = row[col]
-                ok = if v isa Bool
-                    cell == (v ? "True" : "False")
-                elseif v isa AbstractFloat
-                    cell == "inf" ? isinf(v) : (occursin(r"[.eE]|inf|nan", cell) && parse(Float64, cell) === Float64(v))
-                else
-                    cell == string(v)
-                end
-                ok || (@warn "cell differs" col cell v line; return false)
-            end
-        end
-        return true
-    end
-
-    small_refs() = JSON.parsefile(joinpath(TB.TASKB_REFDIR, "small_references.json"))
+    small_refs() = JSON.parsefile(joinpath(pkgdir(FTShadows), "test", "reference", "taskb", "small_references.json"))
 
     "A gate list in the JSON layout of the stored files: [name, qubits...] (a SWAPPERM carries its list)."
     gate_lists(gates) = [g.name == :SWAPPERM ? Any["SWAPPERM", g.qubits] : Any[string(g.name); g.qubits] for g in gates]
 
-    const CACHE = Dict{Any,Any}()
-    cached(f, key) = get!(f, CACHE, key)
-
-    """
-        build(name)
-
-    `TaskB.build_groups(name)` once per test process: the groups record, kept generators, candidate elements,
-    folds and code. Needs Oscar to be loaded.
-    """
-    build(name) = cached(("build", name)) do
-        record, kept, ens, folds, code = TB.build_groups(name)
-        (; record, kept, ens, folds, code)
-    end
 end

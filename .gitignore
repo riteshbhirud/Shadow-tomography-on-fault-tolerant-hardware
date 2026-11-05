@@ -27,7 +27,7 @@ venv/
 # Downloaded papers and LaTeX sources (copyright): not redistributed
 papers/
 
-# Generated results, logs and caches (regenerate with scripts/run_all.sh)
+# Local results, logs and caches
 results/
 *.log
 *.npz
